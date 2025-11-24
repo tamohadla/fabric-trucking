@@ -2,81 +2,101 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>متابعة طلبات القماش - سادة ومطبوع (Firebase)</title>
+  <title>متابعة طلبات القماش - سادة</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
       background: #f5f5f7;
+      color: #111827;
     }
 
     header {
-      background: #222;
+      background: #111827;
       color: #fff;
       padding: 14px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
     }
 
     header h1 {
-      font-size: 18px;
       margin: 0;
+      font-size: 18px;
+    }
+
+    nav {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     nav button {
-      margin-right: 8px;
       padding: 6px 12px;
       border-radius: 999px;
       border: none;
       cursor: pointer;
       font-size: 13px;
-      background: #444;
+      background: #374151;
       color: #fff;
+      white-space: nowrap;
     }
 
     nav button.active {
       background: #4b7bec;
-      color: #fff;
     }
 
     .container {
       max-width: 1100px;
-      margin: 20px auto;
-      padding: 0 16px 40px;
+      margin: 20px auto 40px;
+      padding: 0 16px;
     }
 
     .card {
       background: #fff;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      border-radius: 18px;
+      padding: 18px 16px 22px;
+      box-shadow: 0 12px 35px rgba(15,23,42,0.08);
       margin-bottom: 20px;
     }
 
-    .card h2 {
-      margin-top: 0;
+    h2 {
+      margin: 0 0 12px;
       font-size: 18px;
-      margin-bottom: 16px;
+    }
+
+    h3 {
+      margin: 6px 0 10px;
+      font-size: 15px;
     }
 
     label {
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       font-size: 13px;
+      color: #4b5563;
     }
 
     input[type="text"],
     input[type="number"],
     input[type="date"],
-    select {
+    select,
+    textarea {
       width: 100%;
       padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
       font-size: 14px;
       box-sizing: border-box;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
+      background: #f9fafb;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 40px;
     }
 
     .row {
@@ -90,24 +110,43 @@
       min-width: 220px;
     }
 
-    button.primary {
-      padding: 10px 18px;
+    .primary {
+      padding: 9px 16px;
       border-radius: 999px;
       border: none;
       cursor: pointer;
       font-size: 14px;
       background: #4b7bec;
       color: #fff;
-      margin-top: 8px;
+      margin-top: 4px;
     }
 
-    button.primary:hover {
-      opacity: 0.9;
+    .primary:disabled {
+      opacity: 0.6;
+      cursor: default;
     }
 
     .msg {
-      margin-top: 10px;
+      margin-top: 6px;
       font-size: 13px;
+    }
+
+    .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .toggle-label input {
+      margin: 0;
+    }
+
+    .info-text {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 4px;
     }
 
     table {
@@ -116,117 +155,95 @@
       font-size: 13px;
     }
 
-    table thead {
-      background: #f1f2f6;
+    thead {
+      background: #f3f4f6;
     }
 
     th, td {
-      padding: 8px;
-      border-bottom: 1px solid #ececec;
+      padding: 7px 5px;
+      border-bottom: 1px solid #e5e7eb;
       text-align: center;
+      white-space: nowrap;
     }
 
-    .hidden {
-      display: none;
+    tr:nth-child(even) {
+      background: #fcfcfd;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 3px 8px;
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 90px;
+      padding: 3px 10px;
       border-radius: 999px;
       font-size: 11px;
-      background: #ffeaa7;
-    }
-
-    .badge-formed {
-      background: #55efc4;
-    }
-
-    .badge-not-formed {
-      background: #ff7675;
       color: #fff;
     }
 
+    .status-lab {
+      background: #f97316; /* تم طلب المخبريات */
+    }
+
+    .status-not-printed {
+      background: #ef4444; /* لم يتم التشكيل */
+    }
+
+    .status-printed {
+      background: #22c55e; /* تم التشكيل */
+    }
+
+    .status-received {
+      background: #0ea5e9; /* تم الاستلام */
+    }
+
     .small-btn {
-      padding: 4px 10px;
+      padding: 4px 8px;
       border-radius: 999px;
       border: none;
       cursor: pointer;
       font-size: 11px;
-      margin: 0 2px;
-      background: #dfe4ea;
-    }
-
-    .small-btn.delete {
-      background: #ff7675;
+      margin: 1px 2px;
       color: #fff;
     }
 
     .small-btn.edit {
-      background: #74b9ff;
-      color: #fff;
+      background: #3b82f6;
     }
 
-    .small-btn.receive {
-      background: #55efc4;
-      color: #000;
+    .small-btn.delete {
+      background: #ef4444;
+    }
+
+    .small-btn.lab-move {
+      background: #10b981;
+    }
+
+    .small-btn.mark-printed {
+      background: #f59e0b;
+    }
+
+    .small-btn.mark-received {
+      background: #22c55e;
     }
 
     .small-btn.unreceive {
-      background: #fab1a0;
-      color: #000;
+      background: #6b7280;
     }
 
-    .small-btn.form {
-      background: #ffeaa7;
-      color: #000;
-    }
-
-    /* 🔽 AutoComplete للخامة */
-    .autocomplete-wrapper {
-      position: relative;
-    }
-
-    .suggestions {
-      position: absolute;
-      top: 100%;
-      right: 0;
-      left: 0;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-top: none;
-      border-radius: 0 0 8px 8px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-      max-height: 200px;
-      overflow-y: auto;
-      z-index: 20;
-    }
-
-    .suggestion-item {
-      padding: 6px 10px;
-      cursor: pointer;
-      font-size: 13px;
-      text-align: right;
-    }
-
-    .suggestion-item:hover {
-      background: #f1f2f6;
-    }
-
-    /* شريط الفلترة */
     .filter-bar {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       gap: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       font-size: 13px;
     }
 
     .filter-btn {
       padding: 4px 10px;
       border-radius: 999px;
-      border: 1px solid #ccc;
+      border: 1px solid #d1d5db;
       background: #fff;
       cursor: pointer;
       font-size: 12px;
@@ -242,681 +259,793 @@
       max-width: 180px;
     }
 
-    /* إجمالي أسفل الجدول */
     .totals {
       margin-top: 6px;
       font-size: 13px;
       text-align: left;
-      color: #333;
+      color: #111827;
+    }
+
+    /* تحسين العرض على الشاشات الصغيرة (مثل الآيفون) */
+    @media (max-width: 600px) {
+      body {
+        padding: 0 10px;
+        font-size: 15px;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      nav {
+        margin-top: 6px;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+      nav button {
+        flex: 1 1 auto;
+        text-align: center;
+      }
+      .container {
+        max-width: 100%;
+        margin: 10px auto 30px;
+        padding: 0 4px 24px;
+      }
+      .row {
+        flex-direction: column;
+        gap: 6px;
+      }
+      .card {
+        padding: 14px 12px 16px;
+        border-radius: 14px;
+      }
+      input[type="text"],
+      input[type="number"],
+      input[type="date"],
+      select,
+      textarea {
+        font-size: 16px !important;
+        padding: 10px 12px;
+      }
+      button,
+      .primary {
+        width: 100%;
+        font-size: 15px;
+        padding: 10px 12px;
+      }
+      table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+      th, td {
+        padding: 8px 6px;
+        font-size: 13px;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>متابعة طلبات القماش</h1>
-    <nav>
-      <button id="nav-solid" class="active">قماش سادة</button>
-      <button id="nav-printed">قماش مطبوع</button>
-    </nav>
-  </header>
+<header>
+  <h1>متابعة طلبات القماش - سادة</h1>
+  <nav>
+    <button id="nav-solid" class="active">قماش سادة</button>
+    <button id="nav-printed" onclick="window.location.href='printed.html'">قماش مطبوع</button>
+  </nav>
+</header>
 
-  <div class="container">
+<div class="container">
+  <!-- نموذج إدخال / تعديل السادة -->
+  <section class="card" id="solid-section">
+    <h2>طلبات القماش السادة</h2>
+    <label class="toggle-label">
+      <input type="checkbox" id="solidEditMode" />
+      <span>وضع التعديل (اختيار طلب من الجدول للتعديل)</span>
+    </label>
+    <div class="info-text">
+      يمكنك إدخال طلب جديد، أو تفعيل وضع التعديل ثم اختيار "تعديل" من أحد الصفوف لتعديل بياناته.
+    </div>
 
-    <!-- صفحة القماش السادة -->
-    <section id="page-solid" class="card">
-      <h2>قماش سادة - نموذج طلب واحد وجداول عرض مختلفة</h2>
+    <div class="row">
+      <div class="col">
+        <label for="solidColorText">اللون (كتابة):</label>
+        <input type="text" id="solidColorText" placeholder="مثال: روز بيج، أخضر زيتوني..." />
+      </div>
+      <div class="col">
+        <label for="solidColorCode">كود اللون (رقم المصبغة) <span style="font-size:11px;color:#888;">(اختياري)</span>:</label>
+        <input
+          type="text"
+          id="solidColorCode"
+          class="normalize-digits"
+          inputmode="numeric"
+          placeholder="مثال: 1234 أو 45-BC (يمكن تركه فارغاً)"
+        />
+      </div>
+    </div>
 
-      <!-- نموذج إدخال الطلب (واحد فقط) -->
-      <h3>إدخال / تعديل طلب سادة</h3>
+    <div class="row">
+      <div class="col">
+        <label for="solidForWhom">لصالح مين (عميل / محل / مخزن):</label>
+        <input type="text" id="solidForWhom" placeholder="اسم العميل، الماركة أو اسم المحل" />
+      </div>
+      <div class="col">
+        <label for="solidPattern">الرسمة:</label>
+        <input type="text" id="solidPattern" placeholder="مثال: سادة بالكامل، برن أوت بسيط..." />
+      </div>
+      <div class="col">
+        <label for="solidQuality">الخامة:</label>
+        <input type="text" id="solidQuality" placeholder="مثال: DTY، قطن 100%، فسكوز..." autocomplete="off" />
+        <div id="qualitySuggestions" class="suggestions hidden" style="
+          position: relative;
+          z-index: 5;
+        "></div>
+      </div>
+    </div>
 
-      <div class="row">
-        <div class="col">
-          <label for="solidColorText">اللون (كتابة):</label>
-          <input type="text" id="solidColorText" placeholder="مثال: روز بيچ، أخضر زيتوني..." />
-        </div>
-       <div class="col">
-  <label for="solidColorCode">كود اللون (رقم المصبغة) <span style="font-size:11px;color:#888;">(اختياري)</span>:</label>
-  <input
-    type="text"
-    id="solidColorCode"
-    class="normalize-digits"
-    inputmode="numeric"
-    placeholder="مثال: 101311"
-/>
+    <div class="row">
+      <div class="col">
+        <label for="solidStatus">حالة الطلب:</label>
+        <select id="solidStatus">
+          <option value="">اختار الحالة...</option>
+          <option value="لم يتم التشكيل">لم يتم التشكيل</option>
+          <option value="تم طلب المخبريات">تم طلب المخبريات</option>
+          <option value="تم التشكيل">تم التشكيل</option>
+        </select>
+      </div>
+      <div class="col">
+        <label for="solidDate">تاريخ تقديم الطلب:</label>
+        <input type="date" id="solidDate" />
+      </div>
+      <div class="col">
+        <label for="solidQtyKg">الكمية (كغ):</label>
+        <input
+          type="text"
+          id="solidQtyKg"
+          class="normalize-digits"
+          inputmode="decimal"
+          placeholder="مثال: 250"
+        />
+      </div>
+    </div>
+
+    <button class="primary" id="solidSaveBtn">حفظ الطلب (سادة)</button>
+    <div class="msg" id="solidMsg"></div>
+  </section>
+
+  <!-- جدول المخبريات -->
+  <section class="card">
+    <h3>جدول المخبريات (حالة الطلب = تم طلب المخبريات)</h3>
+    <table>
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>اللون</th>
+        <th>كود اللون</th>
+        <th>لصالح مين</th>
+        <th>الخامة</th>
+        <th>الكمية (كغ)</th>
+        <th>تاريخ الطلب</th>
+        <th>الحالة</th>
+        <th>إجراءات</th>
+      </tr>
+      </thead>
+      <tbody id="labTableBody"></tbody>
+    </table>
+    <div class="totals" id="labTotals"></div>
+  </section>
+
+  <!-- جدول التشكيلات -->
+  <section class="card">
+    <h3>جدول التشكيلات / الإنتاج (حالة الطلب = لم يتم التشكيل أو تم التشكيل)</h3>
+
+    <div class="filter-bar">
+      <span>فلترة حسب الاستلام:</span>
+      <button class="filter-btn active" id="filterAll">الكل</button>
+      <button class="filter-btn" id="filterReceived">تم استلامه</button>
+      <button class="filter-btn" id="filterNotReceived">لم يستلم بعد</button>
+    </div>
+
+    <div class="filter-bar">
+      <span>فلترة إضافية:</span>
+      <input
+        type="text"
+        id="filterClient"
+        class="filter-input"
+        placeholder="بحث باسم العميل / المحل..."
+      />
+      <input
+        type="text"
+        id="filterQuality"
+        class="filter-input"
+        placeholder="بحث باسم الخامة..."
+      />
+      <span>من تاريخ:</span>
+      <input type="date" id="filterDateFrom" />
+      <span>إلى:</span>
+      <input type="date" id="filterDateTo" />
+      <button class="filter-btn" id="clearFiltersBtn">مسح الفلاتر</button>
+    </div>
+
+    <table>
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>اللون</th>
+        <th>كود اللون</th>
+        <th>لصالح مين</th>
+        <th>الرسمة</th>
+        <th>الخامة</th>
+        <th>الكمية (كغ)</th>
+        <th>تاريخ الطلب</th>
+        <th>حالة الطلب</th>
+        <th>تاريخ الاستلام</th>
+        <th>إجراءات</th>
+      </tr>
+      </thead>
+      <tbody id="solidMainTableBody"></tbody>
+    </table>
+    <div class="totals" id="solidTotals"></div>
+  </section>
 </div>
 
-      </div>
+<!-- Firebase compat -->
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
 
-      <div class="row">
-        <div class="col">
-          <label for="solidForWhom">لصالح مين (عميل / محل / مخزن):</label>
-          <input type="text" id="solidForWhom" placeholder="اسم العميل، الماركة أو اسم المحل" />
-        </div>
-        <div class="col">
-          <label for="solidPattern">الرسمة:</label>
-          <input type="text" id="solidPattern" placeholder="مثال: سادة بالكامل، برن أوت، جاكار بسيط..." />
-        </div>
-        <div class="col">
-          <label for="solidQuality">الخامة:</label>
-          <div class="autocomplete-wrapper">
-            <input type="text" id="solidQuality" placeholder="مثال: DTY، قطن 100%، فسكوز..." autocomplete="off" />
-            <div id="qualitySuggestions" class="suggestions hidden"></div>
-          </div>
-        </div>
-      </div>
+<script>
+  /************ تهيئة Firebase ************/
+  const firebaseConfig = {
+    apiKey: "AIzaSyAiidqHba1MY8D_AnbOv3DWSOjaeGXwB7A",
+    authDomain: "adlatex-fabric-tracking.firebaseapp.com",
+    projectId: "adlatex-fabric-tracking",
+    storageBucket: "adlatex-fabric-tracking.firebasestorage.app",
+    messagingSenderId: "448342410940",
+    appId: "1:448342410940:web:06d676113caad3d82d72b9"
+  };
 
-      <div class="row">
-        <div class="col">
-          <label for="solidStatus">حالة الطلب:</label>
-          <select id="solidStatus">
-            <option value="">اختار الحالة...</option>
-            <option value="لم يتم التشكيل">لم يتم التشكيل</option>
-            <option value="تم طلب المخبريات">تم طلب المخبريات</option>
-            <option value="تم التشكيل">تم التشكيل</option>
-          </select>
-        </div>
-        <div class="col">
-          <label for="solidDate">تاريخ تقديم الطلب:</label>
-          <input type="date" id="solidDate" />
-        </div>
-        <div class="col">
-  <label for="solidQtyKg">الكمية (كغ):</label>
-  <input
-    type="text"
-    id="solidQtyKg"
-    class="normalize-digits"
-    inputmode="decimal"
-    placeholder="مثال: 250"
-/>
-</div>
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-      </div>
+  /************ دالة ترجع تاريخ اليوم بصيغة input date ************/
+  function todayISO() {
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
 
-      <button class="primary" id="solidSaveBtn">حفظ الطلب (سادة)</button>
-      <div class="msg" id="solidMsg"></div>
+  /************ تحويل الأرقام العربية-الهندية إلى أرقام عادية ************/
+  function normalizeArabicDigits(str) {
+    if (!str) return str;
+    const map = {
+      "٠": "0","١": "1","٢": "2","٣": "3","٤": "4",
+      "٥": "5","٦": "6","٧": "7","٨": "8","٩": "9"
+    };
+    return String(str).replace(/[٠-٩]/g, ch => map[ch] ?? ch);
+  }
 
-      <hr style="margin: 24px 0;" />
+  function setupDigitNormalization() {
+    const inputs = document.querySelectorAll(".normalize-digits");
+    inputs.forEach(input => {
+      if (input.dataset.digitNormalized === "1") return;
+      input.dataset.digitNormalized = "1";
+      input.addEventListener("input", () => {
+        const current = input.value;
+        const normalized = normalizeArabicDigits(current);
+        if (normalized !== current) {
+          const pos = input.selectionStart;
+          input.value = normalized;
+          try { input.setSelectionRange(pos, pos); } catch (e) {}
+        }
+      });
+    });
+  }
 
-      <!-- جدول المخبريات -->
-      <h3>جدول المخبريات (حالة الطلب = تم طلب المخبريات)</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>اللون</th>
-            <th>كود اللون</th>
-            <th>الخامة</th>
-            <th>لصالح مين</th>
-            <th>الرسمة</th>
-            <th>حالة الطلب</th>
-            <th>تاريخ الطلب</th>
-            <th>الكمية (كغ)</th>
-            <th>إجراءات</th>
-          </tr>
-        </thead>
-        <tbody id="labTableBody"></tbody>
-      </table>
-      <div class="totals" id="labTotals"></div>
+  /************ ربط العناصر ************/
+  const solidEditMode = document.getElementById("solidEditMode");
 
-      <hr style="margin: 24px 0;" />
+  const solidColorText = document.getElementById("solidColorText");
+  const solidColorCode = document.getElementById("solidColorCode");
+  const solidForWhom   = document.getElementById("solidForWhom");
+  const solidPattern   = document.getElementById("solidPattern");
+  const solidQuality   = document.getElementById("solidQuality");
+  const solidStatus    = document.getElementById("solidStatus");
+  const solidDate      = document.getElementById("solidDate");
+  const solidQtyKg     = document.getElementById("solidQtyKg");
+  const solidSaveBtn   = document.getElementById("solidSaveBtn");
+  const solidMsg       = document.getElementById("solidMsg");
 
-      <!-- جدول التشكيلات -->
-      <h3>جدول التشكيلات / الإنتاج (حالة الطلب = تم التشكيل أو لم يتم التشكيل)</h3>
+  const labTableBody   = document.getElementById("labTableBody");
+  const labTotals      = document.getElementById("labTotals");
 
-      <!-- أزرار الفلترة حسب الاستلام + فلاتر إضافية -->
-      <div class="filter-bar">
-        <span>فلترة حسب الاستلام:</span>
-        <button class="filter-btn active" id="filterAll">الكل</button>
-        <button class="filter-btn" id="filterReceived">تم استلامه</button>
-        <button class="filter-btn" id="filterNotReceived">لم يستلم بعد</button>
-      </div>
+  const solidMainTableBody = document.getElementById("solidMainTableBody");
+  const solidTotals        = document.getElementById("solidTotals");
 
-      <div class="filter-bar">
-        <span>فلترة إضافية:</span>
-        <input type="text" id="filterClient" class="filter-input" placeholder="لصالح مين..." />
-        <input type="text" id="filterQuality" class="filter-input" placeholder="الخامة..." />
-        <span>من:</span>
-        <input type="date" id="filterDateFrom" class="filter-input" />
-        <span>إلى:</span>
-        <input type="date" id="filterDateTo" class="filter-input" />
-        <button class="filter-btn" id="filterReset">مسح الفلاتر</button>
-      </div>
+  const filterAll        = document.getElementById("filterAll");
+  const filterReceived   = document.getElementById("filterReceived");
+  const filterNotReceived= document.getElementById("filterNotReceived");
 
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>اللون</th>
-            <th>كود اللون</th>
-            <th>الخامة</th>
-            <th>لصالح مين</th>
-            <th>الرسمة</th>
-            <th>حالة الطلب</th>
-            <th>تاريخ الطلب</th>
-            <th>الكمية (كغ)</th>
-            <th>تاريخ الاستلام</th>
-            <th>إجراءات</th>
-          </tr>
-        </thead>
-        <tbody id="solidTableBody"></tbody>
-      </table>
-      <div class="totals" id="solidTotals"></div>
-    </section>
+  const filterClient     = document.getElementById("filterClient");
+  const filterQualityInp = document.getElementById("filterQuality");
+  const filterDateFrom   = document.getElementById("filterDateFrom");
+  const filterDateTo     = document.getElementById("filterDateTo");
+  const clearFiltersBtn  = document.getElementById("clearFiltersBtn");
 
-    <!-- صفحة القماش المطبوع (لاحقًا) -->
-    <section id="page-printed" class="card hidden">
-      <h2>طلبات القماش المطبوع</h2>
-      <p style="font-size:14px;">
-        هذه الصفحة مبدئيًا فقط للتجهيز. لاحقًا نضيف نموذج كامل للمطبوع.
-      </p>
-    </section>
+  let solidOrders = [];       // كل الطلبات من Firestore
+  let solidEditId = null;     // ID الطلب الذي نعدّله حالياً
 
-  </div>
+  let solidFilter = "all";    // all | received | not_received
+  let filterClientText = "";
+  let filterQualityText = "";
+  let filterDateFromVal = "";
+  let filterDateToVal   = "";
 
-  <!-- Firebase compat SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+  // تعبئة التاريخ افتراضياً
+  solidDate.value = todayISO();
 
-  <script>
+  function clearSolidForm() {
+    solidColorText.value = "";
+    solidColorCode.value = "";
+    solidForWhom.value   = "";
+    solidPattern.value   = "";
+    solidQuality.value   = "";
+    solidStatus.value    = "";
+    solidDate.value      = todayISO();
+    solidQtyKg.value     = "";
+    solidEditId          = null;
+    solidSaveBtn.textContent = "حفظ الطلب (سادة)";
+  }
 
-	// تحويل الأرقام الهندية إلى العربية
-function normalizeArabicDigits(str) {
-  if (!str) return "";
-  const arabic = "٠١٢٣٤٥٦٧٨٩";
-  const english = "0123456789";
-  return str.replace(/[٠-٩]/g, d => english[arabic.indexOf(d)]);
-}
+  /************ حفظ / تعديل طلب سادة ************/
+  async function saveSolidOrder() {
+    // احتفاظ بتاريخ الاستلام ووقت الإنشاء في حالة التعديل
+    let existingReceivedAt = null;
+    let existingCreatedAt  = null;
+    if (solidEditId !== null) {
+      const existingObj = solidOrders.find(o => o.id === solidEditId);
+      if (existingObj && existingObj.data) {
+        if (existingObj.data.receivedAt) {
+          existingReceivedAt = existingObj.data.receivedAt;
+        }
+        if (existingObj.data.createdAt) {
+          existingCreatedAt = existingObj.data.createdAt;
+        }
+      }
+    }
 
-    /************ تهيئة Firebase ************/
-    const firebaseConfig = {
-      apiKey: "AIzaSyAiidqHba1MY8D_AnbOv3DWSOjaeGXwB7A",
-      authDomain: "adlatex-fabric-tracking.firebaseapp.com",
-      projectId: "adlatex-fabric-tracking",
-      storageBucket: "adlatex-fabric-tracking.firebasestorage.app",
-      messagingSenderId: "448342410940",
-      appId: "1:448342410940:web:06d676113caad3d82d72b9"
+    // تحويل الأرقام الهندية إلى عربية قبل القراءة
+    solidColorCode.value = normalizeArabicDigits(solidColorCode.value);
+    solidQtyKg.value     = normalizeArabicDigits(solidQtyKg.value);
+
+    const qtyStr = solidQtyKg.value.trim();
+    const qtyKg  = qtyStr ? Number(qtyStr) : null;
+
+    const data = {
+      colorText: solidColorText.value.trim(),
+      colorCode: solidColorCode.value.trim(),
+      forWhom  : solidForWhom.value.trim(),
+      pattern  : solidPattern.value.trim(),
+      quality  : solidQuality.value.trim(),
+      status   : solidStatus.value,
+      date     : solidDate.value,
+      qtyKg    : qtyKg,
+      receivedAt: existingReceivedAt || null
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    if (!data.colorText ||
+        !data.forWhom ||
+        !data.status ||
+        !data.date ||
+        data.qtyKg === null) {
 
-    /************ دالة ترجع تاريخ اليوم بصيغة input date ************/
-    function todayISO() {
-      const d = new Date();
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, "0");
-      const dd = String(d.getDate()).padStart(2, "0");
-      return `${yyyy}-${mm}-${dd}`;
+      solidMsg.textContent = "من فضلك املئي جميع الحقول الأساسية (اللون، لصالح مين، حالة الطلب، التاريخ، الكمية).";
+      solidMsg.style.color = "red";
+      return;
     }
 
-    /************ التنقل بين سادة / مطبوع ************/
-    const navSolid   = document.getElementById("nav-solid");
-    const navPrinted = document.getElementById("nav-printed");
-    const pageSolid  = document.getElementById("page-solid");
-    const pagePrinted= document.getElementById("page-printed");
-
-    function showSolid() {
-      navSolid.classList.add("active");
-      navPrinted.classList.remove("active");
-      pageSolid.classList.remove("hidden");
-      pagePrinted.classList.add("hidden");
-    }
-
-    function showPrinted() {
-      navPrinted.classList.add("active");
-      navSolid.classList.remove("active");
-      pagePrinted.classList.remove("hidden");
-      pageSolid.classList.add("hidden");
-    }
-
-    navSolid.addEventListener("click", showSolid);
-    navPrinted.addEventListener("click", showPrinted);
-
-    /************ عناصر النموذج والجداول ************/
-    const solidColorText = document.getElementById("solidColorText");
-    const solidColorCode = document.getElementById("solidColorCode");
-    const solidForWhom   = document.getElementById("solidForWhom");
-    const solidPattern   = document.getElementById("solidPattern");
-    const solidQuality   = document.getElementById("solidQuality");
-    const solidStatus    = document.getElementById("solidStatus");
-    const solidDate      = document.getElementById("solidDate");
-    const solidQtyKg     = document.getElementById("solidQtyKg");
-    const solidSaveBtn   = document.getElementById("solidSaveBtn");
-    const solidMsg       = document.getElementById("solidMsg");
-
-    const labTableBody   = document.getElementById("labTableBody");
-    const solidTableBody = document.getElementById("solidTableBody");
-    const labTotals      = document.getElementById("labTotals");
-    const solidTotals    = document.getElementById("solidTotals");
-
-    const qualitySuggestions = document.getElementById("qualitySuggestions");
-
-    // أزرار الفلترة
-    const filterAll         = document.getElementById("filterAll");
-    const filterReceived    = document.getElementById("filterReceived");
-    const filterNotReceived = document.getElementById("filterNotReceived");
-
-    // فلاتر إضافية
-    const filterClient    = document.getElementById("filterClient");
-    const filterQualityF  = document.getElementById("filterQuality");
-    const filterDateFrom  = document.getElementById("filterDateFrom");
-    const filterDateTo    = document.getElementById("filterDateTo");
-    const filterReset     = document.getElementById("filterReset");
-
-    let solidOrders = [];   // [{id, data}, ...]
-    let solidEditId = null; // null = إضافة جديدة
-    let qualityList = [];   // قائمة الخامات المتاحة
-    let solidFilter = "all"; // all | received | not_received
-
-    let filterClientText = "";
-    let filterQualityText = "";
-    let filterDateFromVal = "";
-    let filterDateToVal   = "";
-
-    // تعبئة التاريخ افتراضيًا عند فتح الصفحة
-    solidDate.value = todayISO();
-
-    function clearSolidForm() {
-      solidColorText.value = "";
-      solidColorCode.value = "";
-      solidForWhom.value   = "";
-      solidPattern.value   = "";
-      solidQuality.value   = "";
-      solidStatus.value    = "";
-      solidDate.value      = todayISO();  // تاريخ اليوم تلقائيًا
-      solidQtyKg.value     = "";
-      solidEditId          = null;
-      solidSaveBtn.textContent = "حفظ الطلب (سادة)";
-    }
-
-    function renderTables() {
-      renderLabTable();
-      renderSolidTable();
-      buildQualityList();
-    }
-
-    // بناء قائمة الخامات من الطلبات
-    function buildQualityList() {
-      const set = new Set();
-      solidOrders.forEach(o => {
-        const q = o.data.quality && o.data.quality.trim();
-        if (q) set.add(q);
-      });
-      qualityList = Array.from(set).sort((a, b) => a.localeCompare(b, "ar"));
-    }
-
-    // جدول المخبريات + الإجمالي
-    function renderLabTable() {
-      labTableBody.innerHTML = "";
-      let counter = 1;
-      let totalQty = 0;
-      let totalCount = 0;
-
-      solidOrders.forEach((o) => {
-        const order = o.data;
-        const id    = o.id;
-        if (order.status !== "تم طلب المخبريات") return;
-
-        totalCount++;
-        totalQty += Number(order.qtyKg || 0);
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${counter++}</td>
-          <td>${order.colorText}</td>
-          <td>${order.colorCode || "—"}</td>
-          <td>${order.quality || "—"}</td>
-          <td>${order.forWhom}</td>
-          <td>${order.pattern}</td>
-          <td><span class="badge">${order.status}</span></td>
-          <td>${order.date}</td>
-          <td>${order.qtyKg}</td>
-          <td>
-            <button class="small-btn form" data-id="${id}" data-action="form">تشكيل</button>
-            <button class="small-btn edit" data-id="${id}" data-action="edit">تعديل</button>
-            <button class="small-btn delete" data-id="${id}" data-action="delete">حذف</button>
-          </td>
-        `;
-        labTableBody.appendChild(tr);
-      });
-
-      labTotals.textContent = `إجمالي عدد الأحواض: ${totalCount} | إجمالي الكمية: ${totalQty} كغ`;
-    }
-
-    // جدول التشكيلات + الفلاتر + الإجمالي
-    function renderSolidTable() {
-      solidTableBody.innerHTML = "";
-      let counter = 1;
-      let totalQty = 0;
-      let totalCount = 0;
-
-      solidOrders.forEach((o) => {
-        const order = o.data;
-        const id    = o.id;
-
-        // فقط الحالات: تم التشكيل أو لم يتم التشكيل
-        if (order.status !== "تم التشكيل" && order.status !== "لم يتم التشكيل") return;
-
-        // فلترة حسب الاستلام
-        if (solidFilter === "received" && !order.receivedAt) return;
-        if (solidFilter === "not_received" && order.receivedAt) return;
-
-        // فلترة حسب العميل
-        if (filterClientText) {
-          const fw = (order.forWhom || "").toLowerCase();
-          if (!fw.includes(filterClientText)) return;
+    try {
+      if (solidEditId === null) {
+        const newData = {
+          ...data,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        await db.collection("solid_orders").add(newData);
+        solidMsg.textContent = "تم حفظ طلب السادة بنجاح ✅";
+      } else {
+        const updateData = { ...data };
+        if (existingCreatedAt) {
+          updateData.createdAt = existingCreatedAt;
         }
+        await db.collection("solid_orders").doc(solidEditId).update(updateData);
+        solidMsg.textContent = "تم تحديث طلب السادة بنجاح ✅";
+      }
+      solidMsg.style.color = "green";
+      clearSolidForm();
+      setTimeout(() => { solidMsg.textContent = ""; }, 2000);
+    } catch (err) {
+      console.error(err);
+      solidMsg.textContent = "حدث خطأ أثناء الحفظ، تأكدي من اتصال الإنترنت أو من صلاحيات Firestore.";
+      solidMsg.style.color = "red";
+    }
+  }
 
-        // فلترة حسب الخامة
-        if (filterQualityText) {
-          const q = (order.quality || "").toLowerCase();
-          if (!q.includes(filterQualityText)) return;
-        }
+  solidSaveBtn.addEventListener("click", saveSolidOrder);
 
-        // فلترة حسب التاريخ (من / إلى) على أساس order.date بصيغة YYYY-MM-DD
-        if (filterDateFromVal && order.date && order.date < filterDateFromVal) return;
-        if (filterDateToVal && order.date && order.date > filterDateToVal) return;
+  /************ الفلترة حسب الاستلام ************/
+  function setSolidFilter(filter) {
+    solidFilter = filter;
+    [filterAll, filterReceived, filterNotReceived].forEach(btn => btn.classList.remove("active"));
+    if (filter === "all")         filterAll.classList.add("active");
+    if (filter === "received")    filterReceived.classList.add("active");
+    if (filter === "not_received")filterNotReceived.classList.add("active");
+    renderTables();
+  }
 
-        totalCount++;
-        totalQty += Number(order.qtyKg || 0);
+  filterAll.addEventListener("click", () => setSolidFilter("all"));
+  filterReceived.addEventListener("click", () => setSolidFilter("received"));
+  filterNotReceived.addEventListener("click", () => setSolidFilter("not_received"));
 
-        // لون الحالة
-        let badgeClass = "badge";
-        if (order.status === "تم التشكيل") badgeClass = "badge badge-formed";
-        if (order.status === "لم يتم التشكيل") badgeClass = "badge badge-not-formed";
+  filterClient.addEventListener("input", () => {
+    filterClientText = filterClient.value.trim().toLowerCase();
+    renderTables();
+  });
 
-        // خلية الاستلام
-        let receivedCellHtml = "";
-        if (order.status === "لم يتم التشكيل") {
-          receivedCellHtml = "—";
-        } else {
-          if (order.receivedAt) {
-            receivedCellHtml = `
-              <div>${order.receivedAt}</div>
-              <button class="small-btn unreceive" data-id="${id}" data-action="unreceive">إلغاء الاستلام</button>
-            `;
-          } else {
-            receivedCellHtml = `
-              <button class="small-btn receive" data-id="${id}" data-action="receive">تم الاستلام</button>
-            `;
-          }
-        }
+  filterQualityInp.addEventListener("input", () => {
+    filterQualityText = filterQualityInp.value.trim().toLowerCase();
+    renderTables();
+  });
 
-        // أزرار الإجراءات في التشكيلات
-        let actionsHtml = `
-          <button class="small-btn edit" data-id="${id}" data-action="edit">تعديل</button>
-          <button class="small-btn delete" data-id="${id}" data-action="delete">حذف</button>
-        `;
-        // لو لم يتم التشكيل نضيف زر "تم التشكيل"
-        if (order.status === "لم يتم التشكيل") {
+  filterDateFrom.addEventListener("change", () => {
+    filterDateFromVal = filterDateFrom.value;
+    renderTables();
+  });
+
+  filterDateTo.addEventListener("change", () => {
+    filterDateToVal = filterDateTo.value;
+    renderTables();
+  });
+
+  clearFiltersBtn.addEventListener("click", () => {
+    filterClient.value     = "";
+    filterQualityInp.value = "";
+    filterDateFrom.value   = "";
+    filterDateTo.value     = "";
+    filterClientText = "";
+    filterQualityText = "";
+    filterDateFromVal = "";
+    filterDateToVal   = "";
+    setSolidFilter("all");
+  });
+
+  /************ بناء الاقتراحات لخانة الخامة ************/
+  function updateQualitySuggestionsList() {
+    const suggestionsBox = document.getElementById("qualitySuggestions");
+    if (!suggestionsBox) return;
+    const set = new Set();
+    solidOrders.forEach(o => {
+      if (o.data && o.data.quality) set.add(o.data.quality);
+    });
+    const html = Array.from(set).map(q => `<div class="quality-option" data-val="${q}">${q}</div>`).join("");
+    suggestionsBox.innerHTML = html;
+  }
+
+  const qualitySuggestions = document.getElementById("qualitySuggestions");
+
+  solidQuality.addEventListener("input", () => {
+    const val = solidQuality.value.trim().toLowerCase();
+    const options = qualitySuggestions.querySelectorAll(".quality-option");
+    let anyVisible = false;
+    options.forEach(opt => {
+      const txt = opt.dataset.val.toLowerCase();
+      const show = !val || txt.includes(val);
+      opt.style.display = show ? "block" : "none";
+      if (show) anyVisible = true;
+    });
+    if (anyVisible) qualitySuggestions.classList.remove("hidden");
+    else qualitySuggestions.classList.add("hidden");
+  });
+
+  qualitySuggestions.addEventListener("click", (e) => {
+    const opt = e.target.closest(".quality-option");
+    if (!opt) return;
+    solidQuality.value = opt.dataset.val;
+    qualitySuggestions.classList.add("hidden");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!qualitySuggestions.contains(e.target) && e.target !== solidQuality) {
+      qualitySuggestions.classList.add("hidden");
+    }
+  });
+
+  /************ عرض الجداول ************/
+  function renderTables() {
+    // تقسيم الطلبات
+    const labOrders = solidOrders.filter(o => o.data && o.data.status === "تم طلب المخبريات");
+    const mainOrders = solidOrders.filter(o => o.data && (o.data.status === "تم التشكيل" || o.data.status === "لم يتم التشكيل"));
+
+    // جدول المخبريات
+    labTableBody.innerHTML = "";
+    let labCount = 0;
+    let labTotal = 0;
+    labOrders.forEach((o, i) => {
+      const d = o.data;
+      labCount++;
+      if (d.qtyKg) labTotal += Number(d.qtyKg);
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${i + 1}</td>
+        <td>${d.colorText || "—"}</td>
+        <td>${d.colorCode || "—"}</td>
+        <td>${d.forWhom || "—"}</td>
+        <td>${d.quality || "—"}</td>
+        <td>${d.qtyKg ?? "—"}</td>
+        <td>${d.date || "—"}</td>
+        <td><span class="status-pill status-lab">تم طلب المخبريات</span></td>
+        <td>
+          <button class="small-btn lab-move" data-id="${o.id}" data-action="lab-to-printed">تشكيل</button>
+          <button class="small-btn edit" data-id="${o.id}" data-action="edit">تعديل</button>
+          <button class="small-btn delete" data-id="${o.id}" data-action="delete">حذف</button>
+        </td>
+      `;
+      labTableBody.appendChild(tr);
+    });
+    labTotals.textContent = `عدد المخبريات: ${labCount} | إجمالي الكمية: ${labTotal || 0} كغ`;
+
+    // جدول التشكيلات + الفلاتر
+    let rows = mainOrders.slice();
+
+    if (solidFilter === "received") {
+      rows = rows.filter(o => o.data && o.data.receivedAt);
+    } else if (solidFilter === "not_received") {
+      rows = rows.filter(o => o.data && !o.data.receivedAt);
+    }
+
+    if (filterClientText) {
+      rows = rows.filter(o => (o.data.forWhom || "").toLowerCase().includes(filterClientText));
+    }
+    if (filterQualityText) {
+      rows = rows.filter(o => (o.data.quality || "").toLowerCase().includes(filterQualityText));
+    }
+
+    if (filterDateFromVal) {
+      rows = rows.filter(o => (o.data.date || "") >= filterDateFromVal);
+    }
+    if (filterDateToVal) {
+      rows = rows.filter(o => (o.data.date || "") <= filterDateToVal);
+    }
+
+    solidMainTableBody.innerHTML = "";
+    let totalCount = 0;
+    let totalQty   = 0;
+
+    // ترتيب حسب التاريخ ثم اللون لزيادة الدقة
+    rows.sort((a, b) => {
+      const da = a.data.date || "";
+      const db = b.data.date || "";
+      const cmp = db.localeCompare(da); // الأحدث أولاً
+      if (cmp !== 0) return cmp;
+      return (a.data.colorText || "").localeCompare(b.data.colorText || "");
+    });
+
+    rows.forEach((o, index) => {
+      const d = o.data;
+      totalCount++;
+      if (d.qtyKg) totalQty += Number(d.qtyKg);
+
+      let statusClass = "status-not-printed";
+      if (d.status === "تم التشكيل")   statusClass = "status-printed";
+      if (d.status === "تم الاستلام")  statusClass = "status-received";
+
+      let actionsHtml = `
+        <button class="small-btn edit" data-id="${o.id}" data-action="edit">تعديل</button>
+        <button class="small-btn delete" data-id="${o.id}" data-action="delete">حذف</button>
+      `;
+
+      if (d.status === "لم يتم التشكيل") {
+        actionsHtml =
+          `<button class="small-btn mark-printed" data-id="${o.id}" data-action="mark-printed">تم التشكيل</button>` +
+          actionsHtml;
+      } else if (d.status === "تم التشكيل") {
+        if (d.receivedAt) {
           actionsHtml =
-            `<button class="small-btn form" data-id="${id}" data-action="form">تم التشكيل</button>` +
+            `<button class="small-btn unreceive" data-id="${o.id}" data-action="unreceive">إلغاء الاستلام</button>` +
+            actionsHtml;
+        } else {
+          actionsHtml =
+            `<button class="small-btn mark-received" data-id="${o.id}" data-action="mark-received">تم الاستلام</button>` +
             actionsHtml;
         }
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${counter++}</td>
-          <td>${order.colorText}</td>
-          <td>${order.colorCode || "—"}</td>
-          <td>${order.quality || "—"}</td>
-          <td>${order.forWhom}</td>
-          <td>${order.pattern}</td>
-          <td><span class="${badgeClass}">${order.status}</span></td>
-          <td>${order.date}</td>
-          <td>${order.qtyKg}</td>
-          <td>${receivedCellHtml}</td>
-          <td>${actionsHtml}</td>
-        `;
-        solidTableBody.appendChild(tr);
-      });
-
-      solidTotals.textContent = `إجمالي عدد الأحواض: ${totalCount} | إجمالي الكمية: ${totalQty} كغ`;
-    }
-
-    // حفظ أو تحديث الطلب
-    async function saveSolidOrder() {
-      // احتفاظ بتاريخ الاستلام لو موجود في حالة التعديل
-      let existingReceivedAt = null;
-      if (solidEditId !== null) {
-        const existing = solidOrders.find(o => o.id === solidEditId);
-        if (existing && existing.data.receivedAt) {
-          existingReceivedAt = existing.data.receivedAt;
-        }
       }
-solidQtyKg.value = normalizeArabicDigits(solidQtyKg.value);
-solidColorCode.value = normalizeArabicDigits(solidColorCode.value);
 
-      const data = {
-        colorText: solidColorText.value.trim(),
-        colorCode: solidColorCode.value.trim(),
-        forWhom  : solidForWhom.value.trim(),
-        pattern  : solidPattern.value.trim(),
-        quality  : solidQuality.value.trim(),
-        status   : solidStatus.value,
-        date     : solidDate.value,
-        qtyKg    : solidQtyKg.value ? Number(solidQtyKg.value) : 0,
-        receivedAt: existingReceivedAt
-      };
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${d.colorText || "—"}</td>
+        <td>${d.colorCode || "—"}</td>
+        <td>${d.forWhom || "—"}</td>
+        <td>${d.pattern || "—"}</td>
+        <td>${d.quality || "—"}</td>
+        <td>${d.qtyKg ?? "—"}</td>
+        <td>${d.date || "—"}</td>
+        <td><span class="status-pill ${statusClass}">${d.status || "—"}</span></td>
+        <td>${d.receivedAt || "—"}</td>
+        <td>${actionsHtml}</td>
+      `;
+      solidMainTableBody.appendChild(tr);
+    });
 
-      if (!data.colorText ||
-          !data.forWhom ||
-          !data.status ||
-          !data.date ||
-          !data.qtyKg) {
+    solidTotals.textContent = `عدد الطلبات: ${totalCount} | إجمالي الكمية: ${totalQty || 0} كغ`;
 
-        solidMsg.textContent = "من فضلك املئي جميع الحقول الأساسية (اللون، لصالح مين، حالة الطلب، التاريخ، الكمية).";
-        solidMsg.style.color = "red";
+    // تحديث قائمة الخامات للاقتراحات
+    updateQualitySuggestionsList();
+  }
+
+  /************ أزرار الجدول (حذف / تعديل / تغيير الحالة) ************/
+  async function deleteOrder(id) {
+    const ok = confirm("هل تريدين حذف هذا الطلب نهائياً؟");
+    if (!ok) return;
+    try {
+      await db.collection("solid_orders").doc(id).delete();
+    } catch (err) {
+      console.error(err);
+      alert("لم يتم الحذف، تأكدي من اتصال الإنترنت أو من صلاحيات Firestore.");
+    }
+  }
+
+  async function markPrinted(id) {
+    const today = todayISO();
+    try {
+      await db.collection("solid_orders").doc(id).update({
+        status: "تم التشكيل",
+        date: today
+      });
+    } catch (err) {
+      console.error(err);
+      alert("لم يتم تغيير الحالة إلى تم التشكيل، تأكدي من اتصال الإنترنت أو من صلاحيات Firestore.");
+    }
+  }
+
+  async function markReceived(id) {
+    const now = new Date().toLocaleString("ar-EG");
+    try {
+      await db.collection("solid_orders").doc(id).update({
+        status: "تم التشكيل",
+        receivedAt: now
+      });
+    } catch (err) {
+      console.error(err);
+      alert("لم يتم وضع تم الاستلام، تأكدي من اتصال الإنترنت أو من صلاحيات Firestore.");
+    }
+  }
+
+  async function unreceiveOrder(id) {
+    const ok = confirm("هل تريدين إلغاء الاستلام لهذا الطلب؟");
+    if (!ok) return;
+    try {
+      await db.collection("solid_orders").doc(id).update({
+        receivedAt: null
+      });
+    } catch (err) {
+      console.error(err);
+      alert("لم يتم إلغاء الاستلام، تأكدي من اتصال الإنترنت أو من صلاحيات Firestore.");
+    }
+  }
+
+  async function moveLabToPrinted(id) {
+    const ok = confirm("سيتم نقل هذا الطلب من جدول المخبريات إلى جدول التشكيلات (تم التشكيل). هل أنت متأكدة؟");
+    if (!ok) return;
+    const today = todayISO();
+    try {
+      await db.collection("solid_orders").doc(id).update({
+        status: "تم التشكيل",
+        date: today
+      });
+    } catch (err) {
+      console.error(err);
+      alert("لم يتم نقل الطلب للتشكيلات، تأكدي من اتصال الإنترنت أو من صلاحيات Firestore.");
+    }
+  }
+
+  labTableBody.addEventListener("click", (e) => {
+    const btn = e.target.closest(".small-btn");
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const action = btn.dataset.action;
+    if (!id || !action) return;
+
+    if (action === "delete") {
+      deleteOrder(id);
+    }
+    if (action === "lab-to-printed") {
+      moveLabToPrinted(id);
+    }
+    if (action === "edit") {
+      const orderObj = solidOrders.find(o => o.id === id);
+      if (!orderObj) return;
+      const order = orderObj.data;
+
+      if (!solidEditMode.checked) {
+        alert("فعّلي وضع التعديل أولاً (اختيار وضع التعديل فوق النموذج).");
         return;
       }
-
-      try {
-        if (solidEditId === null) {
-          const newData = {
-            ...data,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          };
-          await db.collection("solid_orders").add(newData);
-          solidMsg.textContent = "تم حفظ طلب السادة بنجاح ✅";
-        } else {
-          await db.collection("solid_orders").doc(solidEditId).update(data);
-          solidMsg.textContent = "تم تحديث طلب السادة بنجاح ✅";
-        }
-        solidMsg.style.color = "green";
-        clearSolidForm();
-        setTimeout(() => { solidMsg.textContent = ""; }, 2000);
-      } catch (err) {
-        console.error(err);
-        solidMsg.textContent = "حدث خطأ أثناء الحفظ، تأكدي من اتصال الإنترنت أو من صلاحيات Firestore.";
-        solidMsg.style.color = "red";
-      }
+      solidColorText.value = order.colorText || "";
+      solidColorCode.value = order.colorCode || "";
+      solidForWhom.value   = order.forWhom || "";
+      solidPattern.value   = order.pattern || "";
+      solidQuality.value   = order.quality || "";
+      solidStatus.value    = order.status || "";
+      solidDate.value      = order.date || todayISO();
+      solidQtyKg.value     = order.qtyKg ?? "";
+      solidEditId          = id;
+      solidSaveBtn.textContent = "تعديل الطلب (سادة)";
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
+  });
 
-    solidSaveBtn.addEventListener("click", saveSolidOrder);
+  solidMainTableBody.addEventListener("click", (e) => {
+    const btn = e.target.closest(".small-btn");
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const action = btn.dataset.action;
+    if (!id || !action) return;
 
-    // أزرار الفلترة (تم الاستلام / لم يستلم)
-    function setSolidFilter(filter) {
-      solidFilter = filter;
-      [filterAll, filterReceived, filterNotReceived].forEach(btn => btn.classList.remove("active"));
-      if (filter === "all") filterAll.classList.add("active");
-      if (filter === "received") filterReceived.classList.add("active");
-      if (filter === "not_received") filterNotReceived.classList.add("active");
-      renderSolidTable();
+    if (action === "delete") {
+      deleteOrder(id);
     }
-
-    filterAll.addEventListener("click", () => setSolidFilter("all"));
-    filterReceived.addEventListener("click", () => setSolidFilter("received"));
-    filterNotReceived.addEventListener("click", () => setSolidFilter("not_received"));
-
-    // فلاتر إضافية (العميل / الخامة / التاريخ)
-    function updateExtraFilters() {
-      filterClientText   = filterClient.value.trim().toLowerCase();
-      filterQualityText  = filterQualityF.value.trim().toLowerCase();
-      filterDateFromVal  = filterDateFrom.value;
-      filterDateToVal    = filterDateTo.value;
-      renderSolidTable();
+    if (action === "mark-printed") {
+      markPrinted(id);
     }
-
-    filterClient.addEventListener("input", updateExtraFilters);
-    filterQualityF.addEventListener("input", updateExtraFilters);
-    filterDateFrom.addEventListener("change", updateExtraFilters);
-    filterDateTo.addEventListener("change", updateExtraFilters);
-
-    filterReset.addEventListener("click", () => {
-      filterClient.value   = "";
-      filterQualityF.value = "";
-      filterDateFrom.value = "";
-      filterDateTo.value   = "";
-      filterClientText     = "";
-      filterQualityText    = "";
-      filterDateFromVal    = "";
-      filterDateToVal      = "";
-      setSolidFilter("all"); // يرجع الفلترة الرئيسية للكل
-      renderSolidTable();
-    });
-
-    // أزرار الجداول (حذف / استلام / إلغاء الاستلام / تعديل / تشكيل)
-    async function handleTableClick(e) {
-      const target = e.target;
-      const action = target.dataset.action;
-      const id     = target.dataset.id;
-      if (!action || !id) return;
-
-      if (action === "delete") {
-        const ok = confirm("هل أنت متأكدة من حذف هذا الطلب؟");
-        if (!ok) return;
-        try {
-          await db.collection("solid_orders").doc(id).delete();
-        } catch (err) {
-          console.error(err);
-          alert("لم يتم الحذف، تأكدي من اتصال الإنترنت أو من صلاحيات Firestore.");
-        }
-      }
-
-      if (action === "receive") {
-        const now = new Date();
-        const dateStr = now.toLocaleString("ar-EG");
-        try {
-          await db.collection("solid_orders").doc(id).update({ receivedAt: dateStr });
-        } catch (err) {
-          console.error(err);
-          alert("لم يتم التحديث، تأكدي من اتصال الإنترنت أو من صلاحيات Firestore.");
-        }
-      }
-
-      if (action === "unreceive") {
-        const ok = confirm("هل تريدين إلغاء الاستلام لهذا الطلب؟");
-        if (!ok) return;
-        try {
-          await db.collection("solid_orders").doc(id).update({ receivedAt: null });
-        } catch (err) {
-          console.error(err);
-          alert("لم يتم إلغاء الاستلام، تأكدي من اتصال الإنترنت أو من صلاحيات Firestore.");
-        }
-      }
-
-      if (action === "form") {
-        // تغيير حالة الطلب إلى تم التشكيل وتحديث تاريخ الطلب بتاريخ اليوم
-        const today = todayISO();
-        try {
-          await db.collection("solid_orders").doc(id).update({
-            status: "تم التشكيل",
-            date: today
-          });
-        } catch (err) {
-          console.error(err);
-          alert("لم يتم نقل الطلب للتشكيلات، تأكدي من اتصال الإنترنت أو من صلاحيات Firestore.");
-        }
-      }
-
-      if (action === "edit") {
-        const orderObj = solidOrders.find(o => o.id === id);
-        if (!orderObj) return;
-        const order = orderObj.data;
-
-        solidColorText.value = order.colorText;
-        solidColorCode.value = order.colorCode || "";
-        solidForWhom.value   = order.forWhom;
-        solidPattern.value   = order.pattern;
-        solidQuality.value   = order.quality || "";
-        solidStatus.value    = order.status;
-        solidDate.value      = order.date;
-        solidQtyKg.value     = order.qtyKg;
-        solidEditId          = id;
-
-        solidSaveBtn.textContent = "تحديث الطلب (سادة)";
-        solidMsg.textContent = "أنتِ الآن في وضع تعديل لطلب محدد.";
-        solidMsg.style.color = "blue";
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
+    if (action === "mark-received") {
+      markReceived(id);
     }
+    if (action === "unreceive") {
+      unreceiveOrder(id);
+    }
+    if (action === "edit") {
+      const orderObj = solidOrders.find(o => o.id === id);
+      if (!orderObj) return;
+      const order = orderObj.data;
 
-    labTableBody.addEventListener("click", handleTableClick);
-    solidTableBody.addEventListener("click", handleTableClick);
-
-    /************ AutoComplete للخامة ************/
-    function renderQualitySuggestions(list) {
-      if (!list || list.length === 0) {
-        qualitySuggestions.classList.add("hidden");
-        qualitySuggestions.innerHTML = "";
+      if (!solidEditMode.checked) {
+        alert("فعّلي وضع التعديل أولاً (اختيار وضع التعديل فوق النموذج).");
         return;
       }
-      qualitySuggestions.innerHTML = "";
-      list.forEach(q => {
-        const div = document.createElement("div");
-        div.className = "suggestion-item";
-        div.textContent = q;
-        div.addEventListener("mousedown", (e) => {
-          e.preventDefault();
-          solidQuality.value = q;
-          qualitySuggestions.classList.add("hidden");
-        });
-        qualitySuggestions.appendChild(div);
-      });
-      qualitySuggestions.classList.remove("hidden");
+      solidColorText.value = order.colorText || "";
+      solidColorCode.value = order.colorCode || "";
+      solidForWhom.value   = order.forWhom || "";
+      solidPattern.value   = order.pattern || "";
+      solidQuality.value   = order.quality || "";
+      solidStatus.value    = order.status || "";
+      solidDate.value      = order.date || todayISO();
+      solidQtyKg.value     = order.qtyKg ?? "";
+      solidEditId          = id;
+      solidSaveBtn.textContent = "تعديل الطلب (سادة)";
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
+  });
 
-    solidQuality.addEventListener("input", () => {
-      const val = solidQuality.value.trim();
-      if (!val) {
-        renderQualitySuggestions([]);
-        return;
-      }
-      const filtered = qualityList.filter(q =>
-        q.toLowerCase().includes(val.toLowerCase())
-      );
-      renderQualitySuggestions(filtered);
+  /************ الاستماع للتغييرات من Firestore ************/
+  db.collection("solid_orders")
+    .orderBy("createdAt", "asc")
+    .onSnapshot((snapshot) => {
+      solidOrders = snapshot.docs.map(doc => ({
+        id: doc.id,
+        data: doc.data()
+      }));
+      renderTables();
+    }, (error) => {
+      console.error("Firestore listen error:", error);
+      solidMsg.textContent = "مشكلة في الاتصال بقاعدة البيانات (الصلاحيات أو الإنترنت).";
+      solidMsg.style.color = "red";
     });
 
-    solidQuality.addEventListener("focus", () => {
-      const val = solidQuality.value.trim();
-      if (!val) return;
-      const filtered = qualityList.filter(q =>
-        q.toLowerCase().includes(val.toLowerCase())
-      );
-      renderQualitySuggestions(filtered);
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!qualitySuggestions.contains(e.target) && e.target !== solidQuality) {
-        qualitySuggestions.classList.add("hidden");
-      }
-    });
-
-    /************ الاستماع للتغييرات من Firestore ************/
-    db.collection("solid_orders")
-      .orderBy("createdAt", "asc")
-      .onSnapshot((snapshot) => {
-        solidOrders = snapshot.docs.map(doc => ({
-          id: doc.id,
-          data: doc.data()
-        }));
-        renderTables();
-      }, (error) => {
-        console.error("Firestore listen error:", error);
-        solidMsg.textContent = "مشكلة في الاتصال بقاعدة البيانات (الصلاحيات أو الإنترنت).";
-        solidMsg.style.color = "red";
-      });
-  </script>
+  // تفعيل تحويل الأرقام الهندية → عربية
+  setupDigitNormalization();
+</script>
 </body>
 </html>

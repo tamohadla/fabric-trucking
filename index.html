@@ -669,7 +669,9 @@ function normalizeArabicDigits(str) {
           existingReceivedAt = existing.data.receivedAt;
         }
       }
-
+          // أولاً نحول الأرقام الهندية قبل تجهيز البيانات
+        solidQtyKg.value = normalizeArabicDigits(solidQtyKg.value);
+        solidColorCode.value = normalizeArabicDigits(solidColorCode.value);
       const data = {
         colorText: solidColorText.value.trim(),
         colorCode: solidColorCode.value.trim(),
@@ -678,8 +680,6 @@ function normalizeArabicDigits(str) {
         quality  : solidQuality.value.trim(),
         status   : solidStatus.value,
         date     : solidDate.value,
-        solidQtyKg.value = normalizeArabicDigits(solidQtyKg.value);
-        solidColorCode.value = normalizeArabicDigits(solidColorCode.value);
         qtyKg    : solidQtyKg.value ? Number(solidQtyKg.value) : 0,
         receivedAt: existingReceivedAt
       };
@@ -905,4 +905,5 @@ function normalizeArabicDigits(str) {
   </script>
 </body>
 </html>
+
 

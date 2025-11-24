@@ -369,17 +369,14 @@
     <div class="msg" id="tableMessage"></div>
   </section>
 </div>
-
-<!-- Supabase JS v2 -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
   /************* 1) إعداد Supabase *************/
-  // ⚠️ عدّلي هذين السطرين فقط:
   const SUPABASE_URL = "https://umrczwoxjhxwvrezocrm.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtcmN6d294amh4d3ZyZXpvY3JtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5ODA0MTUsImV4cCI6MjA3OTU1NjQxNX0.88PDM2h93rhGhOxVRDa5q3rismemqJJEpmBdwWmfgVQ"; // الصقي الـ anon key هنا فقط عندك في الملف
 
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const STORAGE_BUCKET = "images"; // اسم البكت الذي أنشأناه للصور
+  const STORAGE_BUCKET = "images";
   const TABLE_NAME = "printed_mariages";
 
   function todayISO() {
@@ -465,11 +462,9 @@
 
     mariagesContainer.appendChild(wrapper);
 
-    // تعبئة تاريخ اليوم
     const dateInput = document.getElementById(`date_${idx}`);
     dateInput.value = todayISO();
 
-    // معاينة الصورة
     const fileInput = document.getElementById(`mariageImage_${idx}`);
     const preview = document.getElementById(`mariagePreview_${idx}`);
 
@@ -491,7 +486,7 @@
 
   addMariageBtn.addEventListener("click", () => createMariageGroup());
 
-  /************* 3) حفظ المرياجات إلى Supabase *************/
+  /************* 3) رفع الصورة *************/
   async function uploadImageToSupabase(file, designCode, mariageNumber) {
     if (!file) return null;
 
@@ -518,6 +513,7 @@
     return publicData.publicUrl || null;
   }
 
+  /************* 4) حفظ كل المرياجات في جدول printed_mariages *************/
   async function saveAllMariages() {
     const designCode = document.getElementById("designCode").value.trim();
     const screensCountStr = document.getElementById("screensCount").value.trim();
@@ -557,7 +553,6 @@
         const fileInput = document.getElementById(`mariageImage_${idx}`);
         const file = fileInput.files[0];
 
-        // لو المجموعة فاضية تماماً نتخطاها
         const hasAny =
           mariageNumber || printType || groundPrep || quality ||
           qtyKg || notes || file || dateVal !== todayISO() || status !== "لم يتم التشكيل";
@@ -569,18 +564,19 @@
           imageUrl = await uploadImageToSupabase(file, designCode, mariageNumber || idx);
         }
 
+        // 🟢 هنا أهم تعديل: أسماء الأعمدة توافق الجدول في Supabase (snake_case)
         const insertObj = {
-          designCode,
-          screensCount,
-          mariageNumber: mariageNumber || String(idx),
-          printType,
-          groundPrep,
+          design_code: designCode,
+          screens_count: screensCount,
+          mariage_number: mariageNumber || String(idx),
+          print_type: printType,
+          ground_prep: groundPrep,
           quality: quality || null,
-          qtyKg,
+          qty_kg: qtyKg,
           date: dateVal,
-          status,
+          status: status,
           notes: notes || null,
-          imageUrl
+          image_url: imageUrl
         };
 
         const { error } = await supabaseClient
@@ -596,14 +592,12 @@
       formMessage.textContent = "تم حفظ المرياجات بنجاح ✅";
       formMessage.className = "msg ok";
 
-      // إعادة تهيئة النموذج
       document.getElementById("designCode").value = "";
       document.getElementById("screensCount").value = "";
       mariagesContainer.innerHTML = "";
       mariageCounter = 0;
       createMariageGroup();
 
-      // إعادة تحميل الجدول
       await loadPrintedTable();
 
       setTimeout(() => {
@@ -611,7 +605,7 @@
       }, 2500);
     } catch (e) {
       console.error(e);
-      formMessage.textContent = "حدث خطأ أثناء الحفظ. تأكدي من اتصال الإنترنت وسياسات RLS في Supabase.";
+      formMessage.textContent = "خطأ أثناء الحفظ: " + (e?.message || "تفقدي اتصال الإنترنت أو إعدادات Supabase.");
       formMessage.className = "msg error";
     } finally {
       saveAllBtn.disabled = false;
@@ -619,11 +613,9 @@
     }
   }
 
-  saveAllBtn.addEventListener("click", () => {
-    saveAllMariages();
-  });
+  saveAllBtn.addEventListener("click", saveAllMariages);
 
-  /************* 4) تحميل الجدول من Supabase *************/
+  /************* 5) تحميل جدول التشكيلات *************/
   const printedTableBody = document.getElementById("printedTableBody");
   const tableMessage = document.getElementById("tableMessage");
   const totalsInfo = document.getElementById("totalsInfo");
@@ -640,7 +632,7 @@
 
     if (error) {
       console.error(error);
-      tableMessage.textContent = "حدث خطأ أثناء تحميل البيانات. تأكدي من سياسات RLS.";
+      tableMessage.textContent = "خطأ أثناء تحميل البيانات: " + (error.message || "");
       tableMessage.className = "msg error";
       return;
     }
@@ -651,7 +643,7 @@
 
     data.forEach((row, index) => {
       count++;
-      if (row.qtyKg) totalQty += Number(row.qtyKg);
+      if (row.qty_kg) totalQty += Number(row.qty_kg);
 
       let statusClass = "status-not";
       if (row.status === "تم التشكيل") statusClass = "status-printed";
@@ -675,14 +667,14 @@
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${index + 1}</td>
-        <td>${row.imageUrl ? `<img src="${row.imageUrl}" class="printed-table-img" alt="مرياج" />` : "—"}</td>
-        <td>${row.designCode || "—"}</td>
-        <td>${row.screensCount ?? "—"}</td>
-        <td>${row.mariageNumber || "—"}</td>
-        <td>${row.printType || "—"}</td>
-        <td>${row.groundPrep || "—"}</td>
+        <td>${row.image_url ? `<img src="${row.image_url}" class="printed-table-img" alt="مرياج" />` : "—"}</td>
+        <td>${row.design_code || "—"}</td>
+        <td>${row.screens_count ?? "—"}</td>
+        <td>${row.mariage_number || "—"}</td>
+        <td>${row.print_type || "—"}</td>
+        <td>${row.ground_prep || "—"}</td>
         <td>${row.quality || "—"}</td>
-        <td>${row.qtyKg ?? "—"}</td>
+        <td>${row.qty_kg ?? "—"}</td>
         <td>${row.date || "—"}</td>
         <td><span class="status-pill ${statusClass}">${row.status || "—"}</span></td>
         <td>${row.notes || "—"}</td>
@@ -695,7 +687,7 @@
     tableMessage.textContent = "";
   }
 
-  /************* 5) أزرار الجدول (تم التشكيل / تم الاستلام / تعديل / حذف) *************/
+  /************* 6) أزرار الجدول (تم التشكيل / تم الاستلام / تعديل / حذف) *************/
   async function updateRowStatus(id, newStatus, extraFields = {}) {
     const payload = Object.assign({}, extraFields, { status: newStatus });
 
@@ -706,7 +698,7 @@
 
     if (error) {
       console.error(error);
-      alert("لم يتم تحديث الحالة. تفقدي الإنترنت أو سياسات Supabase.");
+      alert("لم يتم تحديث الحالة: " + (error.message || ""));
     } else {
       await loadPrintedTable();
     }
@@ -722,19 +714,18 @@
 
     if (error) {
       console.error(error);
-      alert("لم يتم الحذف. تفقدي الإنترنت أو سياسات Supabase.");
+      alert("لم يتم الحذف: " + (error.message || ""));
     } else {
       await loadPrintedTable();
     }
   }
 
   async function editRowSimple(id) {
-    // تعديل بسيط: فقط الملاحظات والكمية
     const qtyNew = prompt("أدخلي الكمية الجديدة (اتركيه فارغاً بدون تغيير):");
     const notesNew = prompt("أدخلي ملاحظات جديدة (اتركيه فارغاً بدون تغيير):");
 
     const payload = {};
-    if (qtyNew !== null && qtyNew.trim() !== "") payload.qtyKg = Number(qtyNew);
+    if (qtyNew !== null && qtyNew.trim() !== "") payload.qty_kg = Number(qtyNew);
     if (notesNew !== null && notesNew.trim() !== "") payload.notes = notesNew.trim();
 
     if (Object.keys(payload).length === 0) return;
@@ -746,7 +737,7 @@
 
     if (error) {
       console.error(error);
-      alert("لم يتم التعديل.");
+      alert("لم يتم التعديل: " + (error.message || ""));
     } else {
       await loadPrintedTable();
     }
@@ -763,15 +754,15 @@
     if (action === "delete") {
       deleteRow(id);
     } else if (action === "mark-printed") {
-      updateRowStatus(id, "تم التشكيل", { printedAt: new Date().toISOString() });
+      updateRowStatus(id, "تم التشكيل", { printed_at: new Date().toISOString() });
     } else if (action === "mark-received") {
-      updateRowStatus(id, "تم الاستلام", { receivedAt: new Date().toISOString() });
+      updateRowStatus(id, "تم الاستلام", { received_at: new Date().toISOString() });
     } else if (action === "edit") {
       editRowSimple(id);
     }
   });
 
-  /************* 6) التهيئة عند تحميل الصفحة *************/
+  /************* 7) تهيئة أولية *************/
   (async function init() {
     createMariageGroup();
     await loadPrintedTable();
@@ -779,3 +770,4 @@
 </script>
 </body>
 </html>
+

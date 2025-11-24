@@ -404,6 +404,14 @@
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
 
   <script>
+    // تحويل الأرقام الهندية إلى العربية
+function normalizeArabicDigits(str) {
+  if (!str) return "";
+  const arabic = "٠١٢٣٤٥٦٧٨٩";
+  const english = "0123456789";
+  return str.replace(/[٠-٩]/g, d => english[arabic.indexOf(d)]);
+}
+
     /************ تهيئة Firebase ************/
     const firebaseConfig = {
       apiKey: "AIzaSyAiidqHba1MY8D_AnbOv3DWSOjaeGXwB7A",
@@ -670,6 +678,8 @@
         quality  : solidQuality.value.trim(),
         status   : solidStatus.value,
         date     : solidDate.value,
+        solidQtyKg.value = normalizeArabicDigits(solidQtyKg.value);
+        solidColorCode.value = normalizeArabicDigits(solidColorCode.value);
         qtyKg    : solidQtyKg.value ? Number(solidQtyKg.value) : 0,
         receivedAt: existingReceivedAt
       };
@@ -895,3 +905,4 @@
   </script>
 </body>
 </html>
+

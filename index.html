@@ -276,7 +276,14 @@
         </div>
         <div class="col">
           <label for="solidColorCode">كود اللون (رقم المصبغة) <span style="font-size:11px;color:#888;">(اختياري)</span>:</label>
-          <input type="text" id="solidColorCode" placeholder="مثال: 1234 أو 45-BC (يمكن تركه فارغاً)" />
+          <input
+  type="number"
+  id="solidQtyKg"
+  class="normalize-digits"
+  inputmode="decimal"
+  placeholder="مثال: 101000"
+/>
+
         </div>
       </div>
 
@@ -314,7 +321,14 @@
         </div>
         <div class="col">
           <label for="solidQtyKg">الكمية (كغ):</label>
-          <input type="number" id="solidQtyKg" placeholder="مثال: 250" />
+          <input
+  type="number"
+  id="solidQtyKg"
+  class="normalize-digits"
+  inputmode="decimal"
+  placeholder="مثال: 250"
+/>
+
         </div>
       </div>
 
@@ -404,7 +418,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // تحويل الأرقام الهندية إلى العربية
+
+	// تحويل الأرقام الهندية إلى العربية
 function normalizeArabicDigits(str) {
   if (!str) return "";
   const arabic = "٠١٢٣٤٥٦٧٨٩";
@@ -669,9 +684,9 @@ function normalizeArabicDigits(str) {
           existingReceivedAt = existing.data.receivedAt;
         }
       }
-          // أولاً نحول الأرقام الهندية قبل تجهيز البيانات
-        solidQtyKg.value = normalizeArabicDigits(solidQtyKg.value);
-        solidColorCode.value = normalizeArabicDigits(solidColorCode.value);
+solidQtyKg.value = normalizeArabicDigits(solidQtyKg.value);
+solidColorCode.value = normalizeArabicDigits(solidColorCode.value);
+
       const data = {
         colorText: solidColorText.value.trim(),
         colorCode: solidColorCode.value.trim(),
@@ -905,5 +920,3 @@ function normalizeArabicDigits(str) {
   </script>
 </body>
 </html>
-
-

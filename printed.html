@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>تشكيلات القماش المطبوع</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      background: #f5f5f7;
+      color: #111827;
+    }
+
+    header {
+      background: #111827;
+      color: #fff;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    nav a {
+      margin-right: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      text-decoration: none;
+      background: #374151;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    nav a.active {
+      background: #4b7bec;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 20px auto 40px;
+      padding: 0 16px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 20px 18px 24px;
+      box-shadow: 0 12px 35px rgba(15,23,42,0.08);
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+
+    h3 {
+      margin-top: 0;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 13px;
+      color: #4b5563;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      font-size: 14px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+      background: #f9fafb;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 40px;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .col {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    button.primary {
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      background: #4b7bec;
+      color: #fff;
+      margin-top: 4px;
+    }
+
+    button.primary:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .btn-secondary {
+      background: #10b981;
+    }
+
+    .btn-warning {
+      background: #f5a623;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+    }
+
+    .btn-neutral {
+      background: #6b7280;
+    }
+
+    .msg {
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    .msg.error {
+      color: #dc2626;
+    }
+
+    .msg.ok {
+      color: #16a34a;
+    }
+
+    .printed-top-info {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f3f4f6;
+      margin-bottom: 16px;
+    }
+
+    .mariage-group {
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #f9fafb;
+    }
+
+    .mariage-group h4 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: #111827;
+    }
+
+    .file-input {
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .thumb {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      object-fit: cover;
+      display: none;
+      margin-top: 4px;
+    }
+
+    .mariage-actions-local {
+      margin-top: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead {
+      background: #f3f4f6;
+    }
+
+    th, td {
+      padding: 8px 6px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: center;
+    }
+
+    tr:nth-child(even) {
+      background: #fcfcfd;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 86px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      color: #fff;
+    }
+
+    .status-not {
+      background: #f97373;
+    }
+
+    .status-printed {
+      background: #22c55e;
+    }
+
+    .status-received {
+      background: #0ea5e9;
+    }
+
+    .small-btn {
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 11px;
+      margin: 1px 2px;
+      color: #fff;
+    }
+
+    .small-btn.edit {
+      background: #3b82f6;
+    }
+
+    .small-btn.delete {
+      background: #ef4444;
+    }
+
+    .small-btn.action1 {
+      background: #f59e0b;
+    }
+
+    .small-btn.action2 {
+      background: #10b981;
+    }
+
+    .printed-table-img {
+      width: 55px;
+      height: 55px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid #e5e7eb;
+    }
+
+    .totals {
+      margin-top: 8px;
+      font-size: 13px;
+      text-align: left;
+      color: #111827;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      nav {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      table {
+        font-size: 12px;
+      }
+      th, td {
+        padding: 6px 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>تشكيلات القماش المطبوع</h1>
+  <nav>
+    <!-- عدّلي الرابط لو اسم صفحة السادة عندك مختلف -->
+    <a href="index.html">قماش سادة</a>
+    <a href="printed.html" class="active">قماش مطبوع</a>
+  </nav>
+</header>
+
+<div class="container">
+  <!-- بطاقة إدخال المرياجات -->
+  <section class="card">
+    <h2>إدخال / مراجعة مرياجات الرسمة</h2>
+
+    <!-- بيانات الرسمة -->
+    <div class="printed-top-info">
+      <div class="row">
+        <div class="col">
+          <label for="designCode">رقم / كود الرسمة:</label>
+          <input id="designCode" type="text" placeholder="مثال: P-2025-013 أو رقم داخلي" />
+        </div>
+        <div class="col">
+          <label for="screensCount">عدد الشبلونات:</label>
+          <input id="screensCount" type="number" placeholder="مثال: 6" />
+        </div>
+      </div>
+    </div>
+
+    <!-- مجموعات المرياج -->
+    <h3>مرياجات لهذه الرسمة</h3>
+    <div id="mariagesContainer"></div>
+
+    <button class="primary" id="addMariageBtn">إضافة مرياج جديد</button>
+    <br /><br />
+    <button class="primary btn-secondary" id="saveAllBtn">حفظ كل المرياجات</button>
+    <div class="msg" id="formMessage"></div>
+  </section>
+
+  <!-- جدول التشكيلات -->
+  <section class="card">
+    <h2>جدول تشكيلات المطبوع</h2>
+
+    <table>
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>الصورة</th>
+        <th>رقم الرسمة</th>
+        <th>عدد الشبلونات</th>
+        <th>رقم المرياج</th>
+        <th>نوع الطباعة</th>
+        <th>الأرضية</th>
+        <th>الخامة</th>
+        <th>الكمية (كغ)</th>
+        <th>تاريخ الطلب</th>
+        <th>حالة الطلب</th>
+        <th>ملاحظات</th>
+        <th>إجراءات</th>
+      </tr>
+      </thead>
+      <tbody id="printedTableBody"></tbody>
+    </table>
+
+    <div class="totals" id="totalsInfo"></div>
+    <div class="msg" id="tableMessage"></div>
+  </section>
+</div>
+
+<!-- Supabase JS v2 -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+  /************* 1) إعداد Supabase *************/
+  // ⚠️ عدّلي هذين السطرين فقط:
+  const SUPABASE_URL = "https://umrczwoxjhxwvrezocrm.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtcmN6d294amh4d3ZyZXpvY3JtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5ODA0MTUsImV4cCI6MjA3OTU1NjQxNX0.88PDM2h93rhGhOxVRDa5q3rismemqJJEpmBdwWmfgVQ"; // الصقي الـ anon key هنا فقط عندك في الملف
+
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const STORAGE_BUCKET = "images"; // اسم البكت الذي أنشأناه للصور
+  const TABLE_NAME = "printed_mariages";
+
+  function todayISO() {
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  /************* 2) إدارة مجموعات المرياج في النموذج *************/
+  const mariagesContainer = document.getElementById("mariagesContainer");
+  const addMariageBtn = document.getElementById("addMariageBtn");
+  const saveAllBtn = document.getElementById("saveAllBtn");
+  const formMessage = document.getElementById("formMessage");
+
+  let mariageCounter = 0;
+
+  function createMariageGroup() {
+    mariageCounter++;
+    const idx = mariageCounter;
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "mariage-group";
+    wrapper.dataset.index = idx;
+
+    wrapper.innerHTML = `
+      <h4>مرياج رقم ${idx}</h4>
+      <div class="row">
+        <div class="col">
+          <label>صورة المرياج (ملف أو كاميرا):</label>
+          <input class="file-input" type="file" accept="image/*" capture="environment"
+                 id="mariageImage_${idx}" />
+          <img id="mariagePreview_${idx}" class="thumb" alt="معاينة المرياج" />
+        </div>
+        <div class="col">
+          <label for="mariageNumber_${idx}">رقم المرياج:</label>
+          <input type="text" id="mariageNumber_${idx}" placeholder="مثال: 1، 2، 3..." />
+
+          <label for="printType_${idx}">نوع الطباعة:</label>
+          <select id="printType_${idx}">
+            <option value="">اختار النوع...</option>
+            <option value="بجمنت">بجمنت</option>
+            <option value="راكتف">راكتف</option>
+            <option value="دسبسرس">دسبسرس</option>
+            <option value="صباغة مع طباعة">صباغة مع طباعة</option>
+            <option value="برناوت">برناوت</option>
+          </select>
+
+          <label for="groundPrep_${idx}">تحضير الأرضية:</label>
+          <select id="groundPrep_${idx}">
+            <option value="">اختار...</option>
+            <option value="أوفوايت">أوفوايت</option>
+            <option value="أبيض">أبيض</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="quality_${idx}">الخامة:</label>
+          <input type="text" id="quality_${idx}" placeholder="مثال: قطن فل، DTY، فسكوز..." />
+
+          <label for="qtyKg_${idx}">الكمية (كغ):</label>
+          <input type="number" id="qtyKg_${idx}" placeholder="مثال: 250" />
+
+          <label for="date_${idx}">تاريخ الطلب:</label>
+          <input type="date" id="date_${idx}" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="status_${idx}">حالة الطلب:</label>
+          <select id="status_${idx}">
+            <option value="لم يتم التشكيل">لم يتم التشكيل</option>
+            <option value="تم التشكيل">تم التشكيل</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="notes_${idx}">ملاحظات:</label>
+          <textarea id="notes_${idx}" placeholder="مثال: تعديل بسيط في اللون، ملاحظة للمصبغة..."></textarea>
+        </div>
+      </div>
+    `;
+
+    mariagesContainer.appendChild(wrapper);
+
+    // تعبئة تاريخ اليوم
+    const dateInput = document.getElementById(`date_${idx}`);
+    dateInput.value = todayISO();
+
+    // معاينة الصورة
+    const fileInput = document.getElementById(`mariageImage_${idx}`);
+    const preview = document.getElementById(`mariagePreview_${idx}`);
+
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files[0];
+      if (!file) {
+        preview.style.display = "none";
+        preview.src = "";
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = e => {
+        preview.src = e.target.result;
+        preview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  addMariageBtn.addEventListener("click", () => createMariageGroup());
+
+  /************* 3) حفظ المرياجات إلى Supabase *************/
+  async function uploadImageToSupabase(file, designCode, mariageNumber) {
+    if (!file) return null;
+
+    const cleanDesign = designCode || "no-design";
+    const cleanMariage = mariageNumber || "no-mariage";
+    const fileExt = file.name.split(".").pop();
+    const path = `printed/${cleanDesign}/m${cleanMariage}_${Date.now()}.${fileExt}`;
+
+    const { data, error } = await supabaseClient
+      .storage
+      .from(STORAGE_BUCKET)
+      .upload(path, file);
+
+    if (error) {
+      console.error("Storage upload error:", error);
+      throw error;
+    }
+
+    const { data: publicData } = supabaseClient
+      .storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(path);
+
+    return publicData.publicUrl || null;
+  }
+
+  async function saveAllMariages() {
+    const designCode = document.getElementById("designCode").value.trim();
+    const screensCountStr = document.getElementById("screensCount").value.trim();
+    const screensCount = screensCountStr ? Number(screensCountStr) : null;
+
+    if (!designCode) {
+      formMessage.textContent = "من فضلك أدخلي رقم / كود الرسمة في الأعلى.";
+      formMessage.className = "msg error";
+      return;
+    }
+
+    const groups = Array.from(document.querySelectorAll(".mariage-group"));
+    if (!groups.length) {
+      formMessage.textContent = "أضيفي على الأقل مرياج واحد قبل الحفظ.";
+      formMessage.className = "msg error";
+      return;
+    }
+
+    saveAllBtn.disabled = true;
+    addMariageBtn.disabled = true;
+    formMessage.textContent = "جاري حفظ المرياجات...";
+    formMessage.className = "msg";
+
+    try {
+      for (const group of groups) {
+        const idx = group.dataset.index;
+
+        const mariageNumber = document.getElementById(`mariageNumber_${idx}`).value.trim();
+        const printType = document.getElementById(`printType_${idx}`).value || null;
+        const groundPrep = document.getElementById(`groundPrep_${idx}`).value || null;
+        const quality = document.getElementById(`quality_${idx}`).value.trim();
+        const qtyStr = document.getElementById(`qtyKg_${idx}`).value.trim();
+        const qtyKg = qtyStr ? Number(qtyStr) : null;
+        const dateVal = document.getElementById(`date_${idx}`).value || todayISO();
+        const status = document.getElementById(`status_${idx}`).value || "لم يتم التشكيل";
+        const notes = document.getElementById(`notes_${idx}`).value.trim();
+        const fileInput = document.getElementById(`mariageImage_${idx}`);
+        const file = fileInput.files[0];
+
+        // لو المجموعة فاضية تماماً نتخطاها
+        const hasAny =
+          mariageNumber || printType || groundPrep || quality ||
+          qtyKg || notes || file || dateVal !== todayISO() || status !== "لم يتم التشكيل";
+
+        if (!hasAny) continue;
+
+        let imageUrl = null;
+        if (file) {
+          imageUrl = await uploadImageToSupabase(file, designCode, mariageNumber || idx);
+        }
+
+        const insertObj = {
+          designCode,
+          screensCount,
+          mariageNumber: mariageNumber || String(idx),
+          printType,
+          groundPrep,
+          quality: quality || null,
+          qtyKg,
+          date: dateVal,
+          status,
+          notes: notes || null,
+          imageUrl
+        };
+
+        const { error } = await supabaseClient
+          .from(TABLE_NAME)
+          .insert([insertObj]);
+
+        if (error) {
+          console.error("Insert error:", error);
+          throw error;
+        }
+      }
+
+      formMessage.textContent = "تم حفظ المرياجات بنجاح ✅";
+      formMessage.className = "msg ok";
+
+      // إعادة تهيئة النموذج
+      document.getElementById("designCode").value = "";
+      document.getElementById("screensCount").value = "";
+      mariagesContainer.innerHTML = "";
+      mariageCounter = 0;
+      createMariageGroup();
+
+      // إعادة تحميل الجدول
+      await loadPrintedTable();
+
+      setTimeout(() => {
+        formMessage.textContent = "";
+      }, 2500);
+    } catch (e) {
+      console.error(e);
+      formMessage.textContent = "حدث خطأ أثناء الحفظ. تأكدي من اتصال الإنترنت وسياسات RLS في Supabase.";
+      formMessage.className = "msg error";
+    } finally {
+      saveAllBtn.disabled = false;
+      addMariageBtn.disabled = false;
+    }
+  }
+
+  saveAllBtn.addEventListener("click", () => {
+    saveAllMariages();
+  });
+
+  /************* 4) تحميل الجدول من Supabase *************/
+  const printedTableBody = document.getElementById("printedTableBody");
+  const tableMessage = document.getElementById("tableMessage");
+  const totalsInfo = document.getElementById("totalsInfo");
+
+  async function loadPrintedTable() {
+    tableMessage.textContent = "جاري تحميل البيانات...";
+    tableMessage.className = "msg";
+
+    const { data, error } = await supabaseClient
+      .from(TABLE_NAME)
+      .select("*")
+      .order("date", { ascending: false })
+      .order("id", { ascending: false });
+
+    if (error) {
+      console.error(error);
+      tableMessage.textContent = "حدث خطأ أثناء تحميل البيانات. تأكدي من سياسات RLS.";
+      tableMessage.className = "msg error";
+      return;
+    }
+
+    printedTableBody.innerHTML = "";
+    let totalQty = 0;
+    let count = 0;
+
+    data.forEach((row, index) => {
+      count++;
+      if (row.qtyKg) totalQty += Number(row.qtyKg);
+
+      let statusClass = "status-not";
+      if (row.status === "تم التشكيل") statusClass = "status-printed";
+      if (row.status === "تم الاستلام") statusClass = "status-received";
+
+      let actionsHtml = `
+        <button class="small-btn edit" data-id="${row.id}" data-action="edit">تعديل</button>
+        <button class="small-btn delete" data-id="${row.id}" data-action="delete">حذف</button>
+      `;
+
+      if (row.status === "لم يتم التشكيل") {
+        actionsHtml =
+          `<button class="small-btn action1" data-id="${row.id}" data-action="mark-printed">تم التشكيل</button>` +
+          actionsHtml;
+      } else if (row.status === "تم التشكيل") {
+        actionsHtml =
+          `<button class="small-btn action2" data-id="${row.id}" data-action="mark-received">تم الاستلام</button>` +
+          actionsHtml;
+      }
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${row.imageUrl ? `<img src="${row.imageUrl}" class="printed-table-img" alt="مرياج" />` : "—"}</td>
+        <td>${row.designCode || "—"}</td>
+        <td>${row.screensCount ?? "—"}</td>
+        <td>${row.mariageNumber || "—"}</td>
+        <td>${row.printType || "—"}</td>
+        <td>${row.groundPrep || "—"}</td>
+        <td>${row.quality || "—"}</td>
+        <td>${row.qtyKg ?? "—"}</td>
+        <td>${row.date || "—"}</td>
+        <td><span class="status-pill ${statusClass}">${row.status || "—"}</span></td>
+        <td>${row.notes || "—"}</td>
+        <td>${actionsHtml}</td>
+      `;
+      printedTableBody.appendChild(tr);
+    });
+
+    totalsInfo.textContent = `إجمالي عدد المرياجات: ${count} | إجمالي الكمية: ${totalQty || 0} كغ`;
+    tableMessage.textContent = "";
+  }
+
+  /************* 5) أزرار الجدول (تم التشكيل / تم الاستلام / تعديل / حذف) *************/
+  async function updateRowStatus(id, newStatus, extraFields = {}) {
+    const payload = Object.assign({}, extraFields, { status: newStatus });
+
+    const { error } = await supabaseClient
+      .from(TABLE_NAME)
+      .update(payload)
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      alert("لم يتم تحديث الحالة. تفقدي الإنترنت أو سياسات Supabase.");
+    } else {
+      await loadPrintedTable();
+    }
+  }
+
+  async function deleteRow(id) {
+    const ok = confirm("هل تريدين حذف هذا المرياج نهائياً؟");
+    if (!ok) return;
+    const { error } = await supabaseClient
+      .from(TABLE_NAME)
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      alert("لم يتم الحذف. تفقدي الإنترنت أو سياسات Supabase.");
+    } else {
+      await loadPrintedTable();
+    }
+  }
+
+  async function editRowSimple(id) {
+    // تعديل بسيط: فقط الملاحظات والكمية
+    const qtyNew = prompt("أدخلي الكمية الجديدة (اتركيه فارغاً بدون تغيير):");
+    const notesNew = prompt("أدخلي ملاحظات جديدة (اتركيه فارغاً بدون تغيير):");
+
+    const payload = {};
+    if (qtyNew !== null && qtyNew.trim() !== "") payload.qtyKg = Number(qtyNew);
+    if (notesNew !== null && notesNew.trim() !== "") payload.notes = notesNew.trim();
+
+    if (Object.keys(payload).length === 0) return;
+
+    const { error } = await supabaseClient
+      .from(TABLE_NAME)
+      .update(payload)
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      alert("لم يتم التعديل.");
+    } else {
+      await loadPrintedTable();
+    }
+  }
+
+  printedTableBody.addEventListener("click", (e) => {
+    const btn = e.target.closest("button.small-btn");
+    if (!btn) return;
+
+    const id = btn.dataset.id;
+    const action = btn.dataset.action;
+    if (!id || !action) return;
+
+    if (action === "delete") {
+      deleteRow(id);
+    } else if (action === "mark-printed") {
+      updateRowStatus(id, "تم التشكيل", { printedAt: new Date().toISOString() });
+    } else if (action === "mark-received") {
+      updateRowStatus(id, "تم الاستلام", { receivedAt: new Date().toISOString() });
+    } else if (action === "edit") {
+      editRowSimple(id);
+    }
+  });
+
+  /************* 6) التهيئة عند تحميل الصفحة *************/
+  (async function init() {
+    createMariageGroup();
+    await loadPrintedTable();
+  })();
+</script>
+</body>
+</html>

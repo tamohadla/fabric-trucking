@@ -94,6 +94,11 @@
       background: #f9fafb;
     }
 
+    /* محاولة تقريب حقل التاريخ من بقية الحقول */
+    input[type="date"] {
+      line-height: 1.2;
+    }
+
     textarea {
       resize: vertical;
       min-height: 40px;
@@ -129,18 +134,6 @@
     .msg {
       margin-top: 6px;
       font-size: 13px;
-    }
-
-    .toggle-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    .toggle-label input {
-      margin: 0;
     }
 
     .info-text {
@@ -203,7 +196,7 @@
       border: none;
       cursor: pointer;
       font-size: 11px;
-      margin: 1px 2px;
+      margin: 1px 0;
       color: #fff;
     }
 
@@ -266,10 +259,36 @@
       color: #111827;
     }
 
-    /* تحسين العرض على الشاشات الصغيرة (مثل الآيفون) */
-    @media (max-width: 600px) {
+    /* خلية الإجراءات: الأزرار تحت بعض */
+    .actions-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 3px;
+      min-width: 90px;
+    }
+
+    .actions-cell .small-btn {
+      width: 100%;
+    }
+
+    /* خلية الرسمة تسمح بلف النص */
+    .pattern-cell {
+      white-space: normal;
+      line-height: 1.4;
+      max-width: 160px;
+    }
+
+    /* خلايا النصوص الطويلة (اللون، الخامة، لصالح مين) نسمح لها باللف */
+    .wrap-cell {
+      white-space: normal;
+      line-height: 1.4;
+    }
+
+    /* تحسين العرض على الشاشات المتوسطة والصغيرة (آيفون + آيباد عمودي) */
+    @media (max-width: 900px) {
       body {
-        padding: 0 10px;
+        padding: 0 8px;
         font-size: 15px;
       }
       header {
@@ -292,7 +311,7 @@
         padding: 0 4px 24px;
       }
       .row {
-        flex-direction: column;
+        flex-direction: column;      /* الحقول فوق بعض، عرض كامل */
         gap: 6px;
       }
       .card {
@@ -340,12 +359,8 @@
   <!-- نموذج إدخال / تعديل السادة -->
   <section class="card" id="solid-section">
     <h2>طلبات القماش السادة</h2>
-    <label class="toggle-label">
-      <input type="checkbox" id="solidEditMode" />
-      <span>وضع التعديل (اختيار طلب من الجدول للتعديل)</span>
-    </label>
     <div class="info-text">
-      يمكنك إدخال طلب جديد، أو تفعيل وضع التعديل ثم اختيار "تعديل" من أحد الصفوف لتعديل بياناته.
+      إدخال طلب جديد أو تعديل طلب موجود من الجدول أسفل (زر تعديل).
     </div>
 
     <div class="row">
@@ -545,8 +560,6 @@
   }
 
   /************ ربط العناصر ************/
-  const solidEditMode = document.getElementById("solidEditMode");
-
   const solidColorText = document.getElementById("solidColorText");
   const solidColorCode = document.getElementById("solidColorCode");
   const solidForWhom   = document.getElementById("solidForWhom");
@@ -779,14 +792,14 @@
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${i + 1}</td>
-        <td>${d.colorText || "—"}</td>
+        <td class="wrap-cell">${d.colorText || "—"}</td>
         <td>${d.colorCode || "—"}</td>
-        <td>${d.forWhom || "—"}</td>
-        <td>${d.quality || "—"}</td>
+        <td class="wrap-cell">${d.forWhom || "—"}</td>
+        <td class="wrap-cell">${d.quality || "—"}</td>
         <td>${d.qtyKg ?? "—"}</td>
         <td>${d.date || "—"}</td>
         <td><span class="status-pill status-lab">تم طلب المخبريات</span></td>
-        <td>
+        <td class="actions-cell">
           <button class="small-btn lab-move" data-id="${o.id}" data-action="lab-to-printed">تشكيل</button>
           <button class="small-btn edit" data-id="${o.id}" data-action="edit">تعديل</button>
           <button class="small-btn delete" data-id="${o.id}" data-action="delete">حذف</button>
@@ -823,7 +836,7 @@
     let totalCount = 0;
     let totalQty   = 0;
 
-    // ترتيب حسب التاريخ ثم اللون لزيادة الدقة
+    // ترتيب حسب التاريخ ثم اسم اللون (الأحدث أولاً)
     rows.sort((a, b) => {
       const da = a.data.date || "";
       const db = b.data.date || "";
@@ -865,16 +878,16 @@
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${index + 1}</td>
-        <td>${d.colorText || "—"}</td>
+        <td class="wrap-cell">${d.colorText || "—"}</td>
         <td>${d.colorCode || "—"}</td>
-        <td>${d.forWhom || "—"}</td>
-        <td>${d.pattern || "—"}</td>
-        <td>${d.quality || "—"}</td>
+        <td class="wrap-cell">${d.forWhom || "—"}</td>
+        <td class="pattern-cell">${d.pattern || "—"}</td>
+        <td class="wrap-cell">${d.quality || "—"}</td>
         <td>${d.qtyKg ?? "—"}</td>
         <td>${d.date || "—"}</td>
         <td><span class="status-pill ${statusClass}">${d.status || "—"}</span></td>
         <td>${d.receivedAt || "—"}</td>
-        <td>${actionsHtml}</td>
+        <td class="actions-cell">${actionsHtml}</td>
       `;
       solidMainTableBody.appendChild(tr);
     });
@@ -969,10 +982,7 @@
       if (!orderObj) return;
       const order = orderObj.data;
 
-      if (!solidEditMode.checked) {
-        alert("فعّلي وضع التعديل أولاً (اختيار وضع التعديل فوق النموذج).");
-        return;
-      }
+      // تعبئة النموذج مباشرة للتعديل (بدون وضع تعديل)
       solidColorText.value = order.colorText || "";
       solidColorCode.value = order.colorCode || "";
       solidForWhom.value   = order.forWhom || "";
@@ -1011,10 +1021,7 @@
       if (!orderObj) return;
       const order = orderObj.data;
 
-      if (!solidEditMode.checked) {
-        alert("فعّلي وضع التعديل أولاً (اختيار وضع التعديل فوق النموذج).");
-        return;
-      }
+      // تعبئة النموذج مباشرة للتعديل
       solidColorText.value = order.colorText || "";
       solidColorCode.value = order.colorCode || "";
       solidForWhom.value   = order.forWhom || "";

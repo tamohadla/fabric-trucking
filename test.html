@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تجربة عرض البطاقات - موبايل</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f3f4f6;
+      padding: 16px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* الشكل الطبيعي للجدول (على الكمبيوتر) */
+    table {
+      width: 100%;
+      background: white;
+      border-collapse: collapse;
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      text-align: right;
+    }
+
+    th {
+      background: #f8f8f8;
+      font-weight: bold;
+    }
+
+    /* ------------------------ */
+    /*   Card View على الموبايل */
+    /* ------------------------ */
+    @media (max-width: 900px) {
+
+      table {
+        border: none;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tr {
+        display: block;
+        background: #fff;
+        padding: 12px;
+        margin-bottom: 16px;
+        border-radius: 14px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      }
+
+      td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 4px;
+        border: none;
+        border-bottom: 1px solid #eee;
+        font-size: 15px;
+      }
+
+      td:last-child {
+        border-bottom: none;
+      }
+
+      /* العنوان الصغير */
+      td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #444;
+        margin-left: 12px;
+      }
+    }
+
+    /* أزرار صغيرة للتجربة */
+    .btn {
+      padding: 6px 10px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+  </style>
+</head>
+<body>
+
+<h2>تجربة عرض الجدول كـ بطاقة في الموبايل</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>اللون</th>
+      <th>الخامة</th>
+      <th>الكمية</th>
+      <th>الحالة</th>
+      <th>إجراءات</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr>
+      <td data-label="اللون">روز بيج</td>
+      <td data-label="الخامة">DTY</td>
+      <td data-label="الكمية">250 كغ</td>
+      <td data-label="الحالة">تم الاستلام</td>
+      <td data-label="إجراءات">
+        <button class="btn">تعديل</button>
+      </td>
+    </tr>
+
+    <tr>
+      <td data-label="اللون">زيتي</td>
+      <td data-label="الخامة">قطن</td>
+      <td data-label="الكمية">180 كغ</td>
+      <td data-label="الحالة">لم يتم التشكيل</td>
+      <td data-label="إجراءات">
+        <button class="btn">تعديل</button>
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+</body>
+</html>

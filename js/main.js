@@ -321,15 +321,17 @@ function renderTables() {
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${i + 1}</td>
-      <td class="wrap-cell">${d.colorText || "—"}</td>
-      <td>${d.colorCode || "—"}</td>
-      <td class="wrap-cell">${d.forWhom || "—"}</td>
-      <td class="wrap-cell">${d.quality || "—"}</td>
-      <td>${d.qtyKg ?? "—"}</td>
-      <td>${d.date || "—"}</td>
-      <td><span class="status-pill status-lab">تم طلب المخبريات</span></td>
-      <td class="actions-cell">
+      <td data-label="#">${i + 1}</td>
+      <td class="wrap-cell" data-label="اللون">${d.colorText || "—"}</td>
+      <td data-label="كود اللون">${d.colorCode || "—"}</td>
+      <td class="wrap-cell" data-label="لصالح مين">${d.forWhom || "—"}</td>
+      <td class="wrap-cell" data-label="الخامة">${d.quality || "—"}</td>
+      <td data-label="الكمية (كغ)">${d.qtyKg ?? "—"}</td>
+      <td data-label="تاريخ الطلب">${d.date || "—"}</td>
+      <td data-label="الحالة">
+        <span class="status-pill status-lab">تم طلب المخبريات</span>
+      </td>
+      <td class="actions-cell" data-label="إجراءات">
         <button class="small-btn lab-move" data-id="${o.id}" data-action="lab-to-printed">تشكيل</button>
         <button class="small-btn edit" data-id="${o.id}" data-action="edit">تعديل</button>
         <button class="small-btn delete" data-id="${o.id}" data-action="delete">حذف</button>
@@ -380,41 +382,53 @@ function renderTables() {
     totalCount++;
     if (d.qtyKg) totalQty += Number(d.qtyKg);
 
-    // تعيين لون الحالة حسب المطلوب
-    let statusClass = "status-pending";
-    if (d.status === "تم التشكيل")   statusClass = "status-printed";
-    if (d.status === "تم الاستلام")  statusClass = "status-received";
+    // تطبيع حالة الطلب مع دعم البيانات القديمة:
+    // إذا كان هناك receivedAt نعتبره "تم الاستلام" حتى لو كان status ما زال "تم التشكيل"
+    const rawStatus = (d.status || "").trim();
+    const hasReceivedFlag = !!d.receivedAt;
 
-    // تاريخ الاستلام أسفل الحالة في حال تم الاستلام
+    let normalizedStatus = rawStatus;
+    if (hasReceivedFlag && rawStatus !== "تم الاستلام") {
+      // طلب قديم: تم استلامه فعليًا لكن status لم يتحدث
+      normalizedStatus = "تم الاستلام";
+    }
+
+    // اختيار لون الشارة حسب الحالة الموحّدة
+    let statusClass = "status-pending"; // افتراضي = لم يتم التشكيل
+    if (normalizedStatus === "تم التشكيل") {
+      statusClass = "status-printed";
+    } else if (normalizedStatus === "تم الاستلام") {
+      statusClass = "status-received";
+    }
+
+    // بناء خلية الحالة + تاريخ الاستلام (إذا متوفر)
     let statusCellHtml = `
-      <span class="status-pill ${statusClass}">${d.status || "—"}</span>
+      <span class="status-pill ${statusClass}">${normalizedStatus || "—"}</span>
     `;
-    if (d.status === "تم الاستلام" && d.receivedAt) {
+    if (hasReceivedFlag) {
       statusCellHtml += `<div class="received-date">${d.receivedAt}</div>`;
     }
 
-    // أزرار الإجراءات
+    // أزرار الإجراءات (باستخدام الحالة الموحّدة normalizedStatus)
     let actionsHtml = `
       <button class="small-btn edit" data-id="${o.id}" data-action="edit">تعديل</button>
       <button class="small-btn delete" data-id="${o.id}" data-action="delete">حذف</button>
     `;
 
-    if (d.status === "لم يتم التشكيل") {
+    if (normalizedStatus === "لم يتم التشكيل") {
+      // لم يتم التشكيل → زر "تم التشكيل"
       actionsHtml =
         `<button class="small-btn mark-printed" data-id="${o.id}" data-action="mark-printed">تم التشكيل</button>` +
         actionsHtml;
-    } else if (d.status === "تم التشكيل") {
-      if (d.receivedAt) {
-        actionsHtml =
-          `<button class="small-btn unreceive" data-id="${o.id}" data-action="unreceive">إلغاء الاستلام</button>` +
-          actionsHtml;
-      } else {
-        actionsHtml =
-          `<button class="small-btn mark-received" data-id="${o.id}" data-action="mark-received">تم الاستلام</button>` +
-          actionsHtml;
-      }
-    } else if (d.status === "تم الاستلام") {
-      // في حالة تم الاستلام نسمح فقط بإلغاء الاستلام + تعديل + حذف
+
+    } else if (normalizedStatus === "تم التشكيل") {
+      // تم التشكيل ولم يُستلم بعد → زر "تم الاستلام"
+      actionsHtml =
+        `<button class="small-btn mark-received" data-id="${o.id}" data-action="mark-received">تم الاستلام</button>` +
+        actionsHtml;
+
+    } else if (normalizedStatus === "تم الاستلام") {
+      // تم الاستلام (سواء قديم أو جديد) → زر "إلغاء الاستلام"
       actionsHtml =
         `<button class="small-btn unreceive" data-id="${o.id}" data-action="unreceive">إلغاء الاستلام</button>` +
         actionsHtml;
@@ -422,16 +436,20 @@ function renderTables() {
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${index + 1}</td>
-      <td class="wrap-cell">${d.colorText || "—"}</td>
-      <td>${d.colorCode || "—"}</td>
-      <td class="wrap-cell">${d.forWhom || "—"}</td>
-      <td class="pattern-cell">${d.pattern || "—"}</td>
-      <td class="wrap-cell">${d.quality || "—"}</td>
-      <td>${d.qtyKg ?? "—"}</td>
-      <td>${d.date || "—"}</td>
-      <td>${statusCellHtml}</td>
-      <td class="actions-cell">${actionsHtml}</td>
+      <td data-label="#">${index + 1}</td>
+      <td class="wrap-cell" data-label="اللون">${d.colorText || "—"}</td>
+      <td data-label="كود اللون">${d.colorCode || "—"}</td>
+      <td class="wrap-cell" data-label="لصالح مين">${d.forWhom || "—"}</td>
+      <td class="pattern-cell" data-label="الرسمة">${d.pattern || "—"}</td>
+      <td class="wrap-cell" data-label="الخامة">${d.quality || "—"}</td>
+      <td data-label="الكمية (كغ)">${d.qtyKg ?? "—"}</td>
+      <td data-label="تاريخ الطلب">${d.date || "—"}</td>
+      <td data-label="حالة الطلب / الاستلام">
+        ${statusCellHtml}
+      </td>
+      <td class="actions-cell" data-label="إجراءات">
+        ${actionsHtml}
+      </td>
     `;
     solidMainTableBody.appendChild(tr);
   });

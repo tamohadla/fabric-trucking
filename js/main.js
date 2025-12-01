@@ -487,7 +487,7 @@ async function markPrinted(id) {
 }
 
 async function markReceived(id) {
-  const now = new Date().toLocaleString("ar-EG");
+  const now = new Date().toISOString().split("T")[0];
   try {
     await db.collection("solid_orders").doc(id).update({
       status: "تم الاستلام",
@@ -702,3 +702,4 @@ db.collection("solid_orders")
 
 // تفعيل تحويل الأرقام الهندية → عربية لأول مرة
 setupDigitNormalization();
+

@@ -134,7 +134,29 @@
   }
 
   /* المودال على الموبايل */
+  /* تصغير المودال بنسبة 30% على الموبايل */
   .modal-dialog {
-    max-width: 95%;
+    transform: scale(0.70);       /* نسبة التصغير الفعلية */
+    transform-origin: top center; /* من الأعلى لتجنب خروج المودال */
+    
+    max-width: 95% !important;    /* يبقى داخل الشاشة */
+    border-radius: 14px !important;
+  }
+
+  .modal-header h2 {
+    font-size: 15px;
+  }
+
+  .modal-body input,
+  .modal-body select,
+  .modal-body textarea {
+    font-size: 14px !important;
+    padding: 8px 10px;
+  }
+
+  .modal-footer button {
+    font-size: 14px !important;
+    padding: 8px 10px !important;
   }
 }
+

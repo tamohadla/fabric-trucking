@@ -1,4 +1,4 @@
-/* تحسين العرض على الشاشات المتوسطة والصغيرة (آيفون + آيباد عمودي) */
+/* تنسيق خاص للشاشات الصغيرة (موبايل) */
 @media (max-width: 900px) {
   body {
     padding: 0 8px;
@@ -36,7 +36,7 @@
   }
 
   .card {
-    padding: 14px 12px 16px;
+    padding: 14px 10px 16px;
     border-radius: 14px;
   }
 
@@ -57,7 +57,7 @@
     padding: 10px 12px;
   }
 
-  /* --------- تحويل الجداول إلى بطاقات على الموبايل --------- */
+  /* --------- تحويل جداول السادة إلى كروت مثل التصميم --------- */
 
   .card table {
     width: 100%;
@@ -72,22 +72,21 @@
   .card tbody tr {
     display: block;
     background: #ffffff;
-    margin-bottom: 12px;
-    padding: 10px 10px 8px;
+    margin-bottom: 16px;
+    border: 1px solid #d1d5db;
     border-radius: 12px;
-    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.10);
+    overflow: hidden;
   }
 
-  .card tbody tr:last-child {
-    margin-bottom: 4px;
-  }
-
+  /* كل سطر عبارة عن: (القيمة) على اليسار – (العنوان) على اليمين */
   .card tbody td {
-    display: block;
-    padding: 6px 0;
-    border: none;
+    display: flex;
+    flex-direction: row-reverse; /* العنوان يمين، القيمة يسار */
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 6px;
     border-bottom: 1px solid #e5e7eb;
-    font-size: 15px;          /* تكبير خط القيمة */
+    font-size: 16px;          /* تكبير خط القيمة */
     white-space: normal;
   }
 
@@ -95,45 +94,47 @@
     border-bottom: none;
   }
 
-  /* العنوان الصغير لكل حقل في البطاقة (فوق القيمة) */
+  /* العنوان (label) على اليمين، قادم من data-label */
   .card tbody td::before {
     content: attr(data-label);
-    display: block;
     font-weight: 600;
-    font-size: 13px;          /* عنوان أصغر قليلاً */
+    font-size: 13px;
     color: #4b5563;
-    margin-bottom: 2px;
+    margin-left: 12px;
+    white-space: nowrap;
   }
 
-  /* خلية الإجراءات داخل البطاقة */
-  .actions-cell {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 4px;
-  }
-
-  .actions-cell .small-btn {
-    flex: 1 1 48%;
-    width: auto;
-    font-size: 14px;
-    padding: 7px 6px;
-  }
-
-  /* شارة الحالة تبقى صغيرة نسبياً لكن مقروءة */
+  /* شارة الحالة داخل السطر */
   .status-pill {
-    font-size: 12px;
-    padding: 4px 8px;
+    font-size: 13px;
+    padding: 4px 10px;
   }
 
   .received-date {
     font-size: 12px;
+    margin-top: 3px;
+  }
+
+  /* خلية الإجراءات في أسفل البطاقة – أزرار كبيرة ملوّنة */
+  .actions-cell {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .actions-cell .small-btn {
+    flex: 1 1 30%;
+    min-width: 0;
+    padding: 12px 6px;
+    font-size: 15px;
+    border-radius: 18px;
   }
 
   /* المودال على الموبايل */
   .modal-dialog {
-    max-width: 40%;
+    max-width: 95%;
   }
 }
-
-

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>متابعة طلبات القماش - سادة</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/modal.css" />
+  <link rel="stylesheet" href="css/mobile.css" />
+</head>
+<body>
+<header>
+  <h1>متابعة طلبات القماش - سادة</h1>
+  <nav>
+    <button id="nav-solid" class="active">قماش سادة</button>
+    <button id="nav-printed" onclick="window.location.href='printed.html'">قماش مطبوع</button>
+  </nav>
+</header>
+
+<div class="container">
+  <!-- نموذج إدخال / إضافة طلب سادة جديد -->
+  <section class="card" id="solid-section">
+    <h2>طلبات القماش السادة</h2>
+    <div class="info-text">
+      إدخال طلب جديد، مع العلم أن تعديل الطلبات يتم من زر <strong>تعديل</strong> داخل الجدول (نافذة منبثقة).
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label for="solidColorText">اللون (كتابة):</label>
+        <input type="text" id="solidColorText" placeholder="مثال: روز بيج، أخضر زيتوني..." />
+      </div>
+      <div class="col">
+        <label for="solidColorCode">كود اللون (رقم المصبغة) <span class="hint">(اختياري)</span>:</label>
+        <input
+          type="text"
+          id="solidColorCode"
+          class="normalize-digits"
+          inputmode="numeric"
+          placeholder="مثال: 1234 أو 45-BC (يمكن تركه فارغاً)"
+        />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label for="solidForWhom">لصالح مين (عميل / محل / مخزن):</label>
+        <input type="text" id="solidForWhom" placeholder="اسم العميل، الماركة أو اسم المحل" />
+      </div>
+
+      <div class="col">
+        <label for="solidPattern">الرسمة:</label>
+        <input type="text" id="solidPattern" placeholder="مثال: سادة بالكامل، برن أوت بسيط..." />
+      </div>
+
+      <div class="col">
+        <label for="solidQuality">الخامة:</label>
+        <div class="input-with-suggestions">
+          <input type="text" id="solidQuality"
+                 placeholder="مثال: DTY، قطن 100%، فسكوز..." autocomplete="off" />
+          <div id="qualitySuggestions" class="suggestions hidden"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label for="solidStatus">حالة الطلب:</label>
+        <select id="solidStatus">
+          <option value="">اختار الحالة...</option>
+          <option value="لم يتم التشكيل">لم يتم التشكيل</option>
+          <option value="تم طلب المخبريات">تم طلب المخبريات</option>
+          <option value="تم التشكيل">تم التشكيل</option>
+        </select>
+      </div>
+      <div class="col">
+        <label for="solidDate">تاريخ تقديم الطلب:</label>
+        <input type="date" id="solidDate" />
+      </div>
+      <div class="col">
+        <label for="solidQtyKg">الكمية (كغ):</label>
+        <input
+          type="text"
+          id="solidQtyKg"
+          class="normalize-digits"
+          inputmode="decimal"
+          placeholder="مثال: 250"
+        />
+      </div>
+    </div>
+
+    <button class="primary" id="solidSaveBtn">حفظ طلب جديد (سادة)</button>
+    <div class="msg" id="solidMsg"></div>
+  </section>
+
+  <!-- جدول المخبريات -->
+  <section class="card">
+    <h3>جدول المخبريات (حالة الطلب = تم طلب المخبريات)</h3>
+    <table>
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>اللون</th>
+        <th>كود اللون</th>
+        <th>لصالح مين</th>
+        <th>الخامة</th>
+        <th>الكمية (كغ)</th>
+        <th>تاريخ الطلب</th>
+        <th>الحالة</th>
+        <th>إجراءات</th>
+      </tr>
+      </thead>
+      <tbody id="labTableBody"></tbody>
+    </table>
+    <div class="totals" id="labTotals"></div>
+  </section>
+
+  <!-- جدول التشكيلات / الإنتاج -->
+  <section class="card">
+    <h3>جدول التشكيلات / الإنتاج</h3>
+
+    <!-- فلترة حسب حالة الطلب -->
+    <div class="filter-bar">
+      <span>فلترة حسب حالة الطلب:</span>
+      <select id="filterStatus" class="filter-select">
+        <option value="">الكل</option>
+        <option value="لم يتم التشكيل">لم يتم التشكيل</option>
+        <option value="تم التشكيل">تم التشكيل</option>
+        <option value="تم الاستلام">تم الاستلام</option>
+      </select>
+    </div>
+
+    <!-- فلاتر إضافية -->
+    <div class="filter-bar">
+      <span>فلترة إضافية:</span>
+      <input
+        type="text"
+        id="filterClient"
+        class="filter-input"
+        placeholder="بحث باسم العميل / المحل..."
+      />
+      <input
+        type="text"
+        id="filterQuality"
+        class="filter-input"
+        placeholder="بحث باسم الخامة..."
+      />
+      <span>من تاريخ:</span>
+      <input type="date" id="filterDateFrom" />
+      <span>إلى:</span>
+      <input type="date" id="filterDateTo" />
+      <button class="filter-btn" id="clearFiltersBtn">مسح الفلاتر</button>
+    </div>
+
+    <table>
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>اللون</th>
+        <th>كود اللون</th>
+        <th>لصالح مين</th>
+        <th>الرسمة</th>
+        <th>الخامة</th>
+        <th>الكمية (كغ)</th>
+        <th>تاريخ الطلب</th>
+        <th>حالة الطلب / الاستلام</th>
+        <th>إجراءات</th>
+      </tr>
+      </thead>
+      <tbody id="solidMainTableBody"></tbody>
+    </table>
+    <div class="totals" id="solidTotals"></div>
+  </section>
+</div>
+
+<!-- نافذة تعديل الطلب (MODAL) -->
+<div id="editModal" class="modal-overlay hidden">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h2>تعديل طلب سادة</h2>
+      <button type="button" class="modal-close" id="modalCloseBtn">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="row">
+        <div class="col">
+          <label for="modalColorText">اللون (كتابة):</label>
+          <input type="text" id="modalColorText" />
+        </div>
+        <div class="col">
+          <label for="modalColorCode">كود اللون:</label>
+          <input type="text" id="modalColorCode" class="normalize-digits" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="modalForWhom">لصالح مين:</label>
+          <input type="text" id="modalForWhom" />
+        </div>
+        <div class="col">
+          <label for="modalPattern">الرسمة:</label>
+          <input type="text" id="modalPattern" />
+        </div>
+        <div class="col">
+          <label for="modalQuality">الخامة:</label>
+          <div class="input-with-suggestions">
+            <input type="text" id="modalQuality" autocomplete="off" />
+            <div id="modalQualitySuggestions" class="suggestions hidden"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="modalStatus">حالة الطلب:</label>
+          <select id="modalStatus">
+            <option value="">اختار الحالة...</option>
+            <option value="لم يتم التشكيل">لم يتم التشكيل</option>
+            <option value="تم طلب المخبريات">تم طلب المخبريات</option>
+            <option value="تم التشكيل">تم التشكيل</option>
+            <option value="تم الاستلام">تم الاستلام</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="modalDate">تاريخ تقديم الطلب:</label>
+          <input type="date" id="modalDate" />
+        </div>
+        <div class="col">
+          <label for="modalQtyKg">الكمية (كغ):</label>
+          <input type="text" id="modalQtyKg" class="normalize-digits" />
+        </div>
+      </div>
+
+      <div class="info-text">
+        ملاحظة: تعديل حالة الاستلام يفضّل من زر <strong>تم الاستلام</strong> / <strong>إلغاء الاستلام</strong> في الجدول،
+        حتى يبقى تاريخ الاستلام مضبوط تلقائياً.
+      </div>
+      <div class="msg" id="modalMsg"></div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="secondary" id="modalCancelBtn">إلغاء</button>
+      <button class="primary" id="modalSaveBtn">حفظ التعديلات</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase compat scripts -->
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+
+<!-- JS -->
+<script src="js/firebase.js"></script>
+<script src="js/modal.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

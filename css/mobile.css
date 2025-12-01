@@ -136,7 +136,7 @@
   /* المودال على الموبايل */
   /* تصغير المودال بنسبة 30% على الموبايل */
   .modal-dialog {
-    transform: scale(0.5);       /* نسبة التصغير الفعلية */
+    transform: scale(0.75);       /* نسبة التصغير الفعلية */
     transform-origin: top center; /* من الأعلى لتجنب خروج المودال */
     
     max-width: 95% !important;    /* يبقى داخل الشاشة */
@@ -159,5 +159,6 @@
     padding: 8px 10px !important;
   }
 }
+
 
 

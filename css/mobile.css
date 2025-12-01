@@ -55,20 +55,69 @@
     padding: 10px 12px;
   }
 
-  table {
-    display: block;
+  /* --------- تحويل الجداول إلى بطاقات على الموبايل --------- */
+
+  .card table {
     width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
+    border: none;
+    border-collapse: collapse;
   }
 
-  th,
-  td {
-    padding: 8px 6px;
-    font-size: 13px;
+  .card thead {
+    display: none; /* إخفاء رؤوس الأعمدة */
   }
 
+  .card tbody tr {
+    display: block;
+    background: #ffffff;
+    margin-bottom: 12px;
+    padding: 10px 10px 8px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.10);
+  }
+
+  .card tbody tr:last-child {
+    margin-bottom: 4px;
+  }
+
+  .card tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 4px 0;
+    border: none;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 14px;
+    white-space: normal;
+  }
+
+  .card tbody td:last-child {
+    border-bottom: none;
+  }
+
+  /* العنوان الصغير لكل سطر في البطاقة */
+  .card tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: 12px;
+    color: #4b5563;
+    margin-left: 8px;
+  }
+
+  /* تعديل شكل عمود الإجراءات داخل البطاقة */
+  .actions-cell {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .actions-cell .small-btn {
+    width: auto;
+    flex: 1 1 48%;
+  }
+
+  /* المودال على الموبايل */
   .modal-dialog {
     max-width: 95%;
   }

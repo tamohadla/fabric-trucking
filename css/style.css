@@ -264,7 +264,7 @@ tr:nth-child(even) {
 .pattern-cell {
   white-space: normal;
   line-height: 1.4;
-  max-width: 160px;
+  
 }
 
 .wrap-cell {
@@ -343,3 +343,4 @@ tr:nth-child(even) {
 .hidden {
   display: none;
 }
+

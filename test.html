@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>تجربة عرض البطاقات - موبايل</title>
+  <title>تجربة عرض جميع أعمدة الجدول كـ بطاقة</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
@@ -17,7 +17,7 @@
       margin-bottom: 20px;
     }
 
-    /* الشكل الطبيعي للجدول (على الكمبيوتر) */
+    /* ----------- جدول طبيعي (كمبيوتر) ----------- */
     table {
       width: 100%;
       background: white;
@@ -32,7 +32,7 @@
     }
 
     th {
-      background: #f8f8f8;
+      background: #fafafa;
       font-weight: bold;
     }
 
@@ -61,7 +61,7 @@
       td {
         display: flex;
         justify-content: space-between;
-        padding: 8px 4px;
+        padding: 6px 4px;
         border: none;
         border-bottom: 1px solid #eee;
         font-size: 15px;
@@ -71,7 +71,6 @@
         border-bottom: none;
       }
 
-      /* العنوان الصغير */
       td::before {
         content: attr(data-label);
         font-weight: bold;
@@ -80,7 +79,19 @@
       }
     }
 
-    /* أزرار صغيرة للتجربة */
+    /* شارة الحالة */
+    .status-pill {
+      padding: 3px 8px;
+      border-radius: 8px;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .status-pending { background: #ef4444; }
+    .status-printed { background: #3b82f6; }
+    .status-received { background: #22c55e; }
+
+    /* زر */
     .btn {
       padding: 6px 10px;
       background: #2563eb;
@@ -95,25 +106,39 @@
 </head>
 <body>
 
-<h2>تجربة عرض الجدول كـ بطاقة في الموبايل</h2>
+<h2>عرض كل بيانات الصف في بطاقة</h2>
 
 <table>
   <thead>
     <tr>
       <th>اللون</th>
+      <th>كود اللون</th>
+      <th>لصالح مين</th>
+      <th>الرسمة</th>
       <th>الخامة</th>
       <th>الكمية</th>
+      <th>تاريخ الطلب</th>
       <th>الحالة</th>
       <th>إجراءات</th>
     </tr>
   </thead>
+
   <tbody>
 
     <tr>
       <td data-label="اللون">روز بيج</td>
+      <td data-label="كود اللون">1234</td>
+      <td data-label="لصالح مين">Jury</td>
+      <td data-label="الرسمة">سادة</td>
       <td data-label="الخامة">DTY</td>
       <td data-label="الكمية">250 كغ</td>
-      <td data-label="الحالة">تم الاستلام</td>
+      <td data-label="تاريخ الطلب">2025-02-01</td>
+
+      <td data-label="الحالة">
+        <span class="status-pill status-received">تم الاستلام</span>
+        <div style="font-size:12px;color:#555;margin-top:4px">2025/02/05</div>
+      </td>
+
       <td data-label="إجراءات">
         <button class="btn">تعديل</button>
       </td>
@@ -121,9 +146,17 @@
 
     <tr>
       <td data-label="اللون">زيتي</td>
+      <td data-label="كود اللون">5678</td>
+      <td data-label="لصالح مين">Adla</td>
+      <td data-label="الرسمة">Burn-out</td>
       <td data-label="الخامة">قطن</td>
       <td data-label="الكمية">180 كغ</td>
-      <td data-label="الحالة">لم يتم التشكيل</td>
+      <td data-label="تاريخ الطلب">2025-01-29</td>
+
+      <td data-label="الحالة">
+        <span class="status-pill status-printed">تم التشكيل</span>
+      </td>
+
       <td data-label="إجراءات">
         <button class="btn">تعديل</button>
       </td>

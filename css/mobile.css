@@ -132,6 +132,7 @@
 
   /* المودال على الموبايل */
   .modal-dialog {
-    max-width: 95%;
+    max-width: 70%;
   }
 }
+

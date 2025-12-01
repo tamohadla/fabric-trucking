@@ -2,7 +2,7 @@
 @media (max-width: 900px) {
   body {
     padding: 0 8px;
-    font-size: 15px;
+    font-size: 16px;
   }
 
   header {
@@ -20,6 +20,8 @@
   nav button {
     flex: 1 1 auto;
     text-align: center;
+    font-size: 15px;
+    padding: 8px 10px;
   }
 
   .container {
@@ -81,13 +83,11 @@
   }
 
   .card tbody td {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 4px 0;
+    display: block;
+    padding: 6px 0;
     border: none;
     border-bottom: 1px solid #e5e7eb;
-    font-size: 14px;
+    font-size: 15px;          /* تكبير خط القيمة */
     white-space: normal;
   }
 
@@ -95,26 +95,39 @@
     border-bottom: none;
   }
 
-  /* العنوان الصغير لكل سطر في البطاقة */
+  /* العنوان الصغير لكل حقل في البطاقة (فوق القيمة) */
   .card tbody td::before {
     content: attr(data-label);
+    display: block;
     font-weight: 600;
-    font-size: 12px;
+    font-size: 13px;          /* عنوان أصغر قليلاً */
     color: #4b5563;
-    margin-left: 8px;
+    margin-bottom: 2px;
   }
 
-  /* تعديل شكل عمود الإجراءات داخل البطاقة */
+  /* خلية الإجراءات داخل البطاقة */
   .actions-cell {
-    flex-direction: row;
+    display: flex;
     flex-wrap: wrap;
-    gap: 4px;
-    min-width: 0;
+    gap: 6px;
+    margin-top: 4px;
   }
 
   .actions-cell .small-btn {
-    width: auto;
     flex: 1 1 48%;
+    width: auto;
+    font-size: 14px;
+    padding: 7px 6px;
+  }
+
+  /* شارة الحالة تبقى صغيرة نسبياً لكن مقروءة */
+  .status-pill {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .received-date {
+    font-size: 12px;
   }
 
   /* المودال على الموبايل */

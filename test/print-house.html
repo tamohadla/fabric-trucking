@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>متابعة رسومات المطبعة</title>
+  <link rel="stylesheet" href="print-house.css" />
+</head>
+<body>
+  <div class="page">
+
+    <!-- Top bar -->
+    <header class="ph-header">
+      <button class="back-btn" onclick="window.location.href='index.html'">الرجوع للصفحة الرئيسية</button>
+      <div class="ph-title" id="print-house-name">اسم المطبعة</div>
+    </header>
+
+    <!-- Image modal for full-size preview -->
+    <div class="modal-overlay" id="image-modal" style="display:none;">
+      <div class="image-modal-box">
+        <img id="modal-image" src="" alt="Preview" />
+      </div>
+    </div>
+
+    <main class="ph-main">
+
+      <!-- Card: new request -->
+      <section class="card-section">
+  <div class="card-header">
+    إضافة طلب رسمة جديد
+  </div>
+
+  <div class="card-body">
+
+    <!-- العمود الأيسر: الحقول -->
+    <div class="card-left">
+
+      <label class="field-label">الرسمة</label>
+      <input type="text" class="input-box" id="design_name" />
+
+      <label class="field-label">نوع القماش</label>
+      <input type="text" class="input-box" id="fabric_type" />
+
+      <label class="field-label">العميل</label>
+      <input type="text" class="input-box" id="for_customer" />
+
+      <label class="field-label">نوع الطباعة</label>
+      <input type="text" class="input-box" id="print_type" />
+
+      <label class="field-label">الملاحظات</label>
+      <textarea class="textarea-box" id="notes"></textarea>
+
+    </div>
+
+    <!-- العمود الأيمن: الصورة + التاريخ + زر الحفظ -->
+    <div class="card-right">
+
+      <label class="field-label">صورة الرسمة</label>
+      <div class="image-upload-wrapper">
+        <div class="image-upload-box" id="image-box">
+          <span class="plus">+</span>
+          <input type="file" id="design_image_file" accept="image/*" capture="environment" />
+          <img id="image-preview" class="preview-img" style="display:none;" />
+        </div>
+      </div>
+
+      <label class="field-label">تاريخ الطلب</label>
+      <input type="date" class="input-box" id="sent_date" />
+
+      <button class="save-btn" id="save-request-btn">حفظ الطلب</button>
+      <div id="save-status" class="status-message"></div>
+
+    </div>
+
+  </div>
+</section>
+
+
+      <!-- List: request cards -->
+      <section class="list-section">
+        <div class="list-header">
+          <div class="list-title">جدول طلبات المرسم</div>
+        </div>
+
+        <div class="list-header">
+          
+          <div class="list-filters">
+            <select id="status-filter">
+              <option value="all">كل الحالات</option>
+              <option value="pending">لم يتم الاستلام بعد</option>
+              <option value="done">تم الاستلام</option>
+            </select>
+            <input type="text" id="search-input" placeholder="بحث بالرسمة أو العميل..." />
+          </div>
+        </div>
+
+        <div id="requests-container" class="requests-container">
+          <!-- Request cards will be rendered here -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="print-house.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>كل الرسومات</title>
+  <link rel="stylesheet" href="all-artworks.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <button class="back-btn" onclick="window.location.href='index.html'">الرجوع للصفحة الرئيسية</button>
+      <div class="header-right">كل الرسومات</div>
+    </header>
+
+    <main class="main-container">
+      <div class="filters-row">
+        <input type="text" id="search-all" placeholder="بحث بالرسمة أو المطبعة أو العميل..." />
+      </div>
+
+      <div id="all-requests-container" class="requests-grid">
+        <!-- Cards will be rendered by JS -->
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="all-artworks.js"></script>
+</body>
+</html>

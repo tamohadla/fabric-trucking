@@ -1,0 +1,436 @@
+body {
+  margin: 0;
+  background: #fafafa;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.page {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Header */
+.ph-header {
+  background: #f4f4f4;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  color: #555;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.ph-title {
+  font-size: 18px;
+}
+
+.back-btn {
+  border: none;
+  background: #e0e0e0;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Layout */
+.ph-main {
+  padding: 24px 20px 40px;
+}
+
+/* New request card */
+.card-section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px 20px 22px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.card-header {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #444;
+  text-align: right;
+}
+
+/* الحاوية العامة للكرت */
+.card-body {
+  display: flex;
+  flex-direction: column;   /* افتراضياً للأجهزة الصغيرة */
+  gap: 16px;
+}
+
+/* العمودين */
+.card-left,
+.card-right {
+  width: 100%;
+}
+
+/* في الشاشات الواسعة (كمبيوتر) نجعلها عمودين */
+@media (min-width: 900px) {
+  .card-body {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .card-left {
+    flex: 2;
+    margin-left: 16px;   /* مسافة بسيطة بين العمودين */
+  }
+
+  .card-right {
+    flex: 1;
+    max-width: 320px;    /* تقريباً نفس عرض التصميم الذي أرسلته */
+  }
+
+  .image-upload-wrapper {
+    justify-content: center;
+  }
+
+  .image-upload-box {
+    width: 100%;
+    max-width: 260px;
+  }
+
+  .save-btn {
+    width: 100%;
+    margin-top: 12px;
+  }
+}
+
+/* Labels & Inputs */
+.field-label {
+  font-size: 14px;
+  margin: 14px 4px 6px;
+  color: #555;
+}
+
+.input-box {
+  width: 95%;
+  padding: 14px;
+  background: #f1f1f1;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+}
+
+.textarea-box {
+  width: 95%;
+  height: 120px;
+  padding: 14px;
+  background: #f1f1f1;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+  resize: none;
+}
+
+/* Image upload square */
+.image-upload-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.image-upload-box {
+  width: 260px;
+  aspect-ratio: 1 / 1;
+  background: #f1f1f1;
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.image-upload-box input[type=file] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.image-upload-box .plus {
+  font-size: 48px;
+  color: #777;
+}
+
+.preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Save button & status */
+.save-btn {
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px;
+  background: #3a79ff;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.save-btn:hover {
+  background: #2f63d6;
+}
+
+.status-message {
+  margin-top: 8px;
+  font-size: 13px;
+  min-height: 18px;
+}
+
+.status-message.ok {
+  color: #2e7d32;
+}
+
+.status-message.error {
+  color: #c62828;
+}
+
+.status-message.info {
+  color: #555;
+}
+
+/* List header & filters */
+.list-section {
+  margin-top: 8px;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.list-title {
+  font-size: 18px;
+  color: #444;
+}
+
+.list-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap; 
+}
+
+.list-filters select,
+.list-filters input {
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+}
+
+/* Request cards container & card */
+.requests-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.request-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 10px 10px 8px;
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* Image column */
+.request-image {
+  width: 220px;
+  height: 220px;
+  border-radius: 8px;
+  background: #f1f1f1;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+/* Info column */
+.request-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #444;
+
+	
+}
+
+/* كل حقلين داخل request-line يظهران تحت بعض */
+.request-line {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+
+  margin-top: 6px;
+}
+
+
+/* Status pill */
+.status-pill {
+  display: flex ;
+justify-content: center;
+  padding: 4px ;
+  border-radius: 8px;
+  font-size: 15px;
+margin-top: 6px;
+}
+
+.status-pending {
+  background: #e0e0e0;
+  color: #555;
+}
+
+.status-done {
+  background: #c8e6c9;
+  color: #256029;
+}
+
+/* Actions row */
+.request-actions-row {
+  margin-top: 6px;
+  display: flex;
+  gap: 6px;
+}
+
+.request-actions-row button {
+  flex: 1;
+  font-size: 15px;
+  padding: 5px 0;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #e0e0e0;
+}
+
+.request-actions-row .btn-toggle.done {
+  background: #ffe082;
+}
+
+/* Image preview modal */
+#image-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+}
+
+.image-modal-box {
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.image-modal-box img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
+}
+
+/* ============================
+      تصميم خاص للموبايل
+   ============================ */
+@media (max-width: 600px) {
+
+  .page {
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .ph-main {
+    padding: 10px 8px 24px;
+  }
+
+  /* الكرت الأساسي لإضافة الطلب */
+  .card-section {
+    padding: 14px 12px 16px;
+    border-radius: 12px;
+  }
+
+  .field-label {
+    font-size: 13px;
+    margin: 10px 2px 4px;
+  }
+
+  .input-box,
+  .textarea-box {
+    font-size: 13px;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  /* مربع رفع الصورة */
+  .image-upload-box {
+    width: 200px;
+    max-width: 100%;
+  }
+
+  /* الكروت في الأسفل */
+  .request-card {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .request-image {
+    width: 110px;
+    height: 110px;
+    border-radius: 10px;
+  }
+
+  .request-info {
+    font-size: 12px;
+  }
+
+  .request-line {
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .status-line {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  /* أزرار الكرت تحت بعض لسهولة الضغط */
+  .request-actions-row {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .request-actions-row button {
+    font-size: 13px;
+    padding: 7px 0;
+  }
+
+  /* زر حفظ الطلب */
+  .save-btn {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  /* زر الرجوع */
+  .back-btn {
+    font-size: 13px;
+    padding: 5px 12px;
+  }
+}
+

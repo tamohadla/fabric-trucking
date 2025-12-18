@@ -1,11 +1,10 @@
-import { CFG } from "./config.js";
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
-export const sb = (() => {
-  if (typeof supabase === "undefined" || !supabase.createClient) {
-    throw new Error("Supabase library not loaded. Ensure the CDN script is included before modules.");
+export function getSupabase() {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    throw new Error("Supabase keys are missing. Please set SUPABASE_URL and SUPABASE_ANON_KEY.");
   }
-  if (!CFG?.SUPABASE_URL || !CFG?.SUPABASE_ANON_KEY) {
-    throw new Error("Missing Supabase configuration (SUPABASE_URL / SUPABASE_ANON_KEY).");
-  }
-  return supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY);
-})();
+  // global supabase from CDN
+  if (!window.supabase) throw new Error("Supabase library not loaded.");
+  return window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}

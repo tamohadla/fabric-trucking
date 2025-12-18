@@ -1,199 +1,210 @@
-import { CFG } from "./config.js";
-import { sb } from "./supabaseClient.js";
-import { ImageService } from "./imageService.js";
 import { CrudService } from "./crudService.js";
-import { applyFiltersAndSort, renderPrintedTable } from "./table.js";
-import { wireTableActions } from "./actions.js";
+import { ImageService } from "./imageService.js";
+import { applyFiltersAndSort, statusBadgeClass, normalizeRow } from "./table.js";
 import { initEditModal } from "./modalEdit.js";
 import { initDuplicateModal } from "./modalDuplicate.js";
+import { bindRowActions } from "./actions.js";
+
+function ensureSupabaseScript() {
+  if (window.supabase) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Failed to load supabase-js"));
+    document.head.appendChild(s);
+  });
+}
+
+const state = { rows: [] };
+
+function badgeHtml(status) {
+  const cls = statusBadgeClass(status);
+  const text = status || "لم يتم التشكيل";
+  return `<span class="badge ${cls}">${text}</span>`;
+}
+
+function renderTable() {
+  const body = document.getElementById("rowsBody");
+  const statusFilter = document.getElementById("statusFilter").value;
+  const sortBy = document.getElementById("sortBy").value;
+  const search = document.getElementById("searchBox").value;
+
+  const filtered = applyFiltersAndSort(state.rows, { statusFilter, sortBy, search });
+
+  body.innerHTML = filtered.map((r, idx) => {
+    const img = r.imageurl || "";
+    const payload = encodeURIComponent(JSON.stringify(r));
+    return `<tr>
+      <td>${idx+1}</td>
+      <td>${img ? `<img class="thumb" data-action="view" data-payload='${decodeURIComponent(payload)}' src="${img}" alt="img"/>` : ""}</td>
+      <td>${r.designcode || ""}</td>
+      <td>${r.screenscount ?? ""}</td>
+      <td>${r.mariagenumber ?? ""}</td>
+      <td>${r.printtype || ""}</td>
+      <td>${r.groundprep || ""}</td>
+      <td>${r.rawmaterial || ""}</td>
+      <td>${r.grade || ""}</td>
+      <td>${r.qty_kg ?? ""}</td>
+      <td>${(r.order_date||"").slice(0,10)}</td>
+      <td>${badgeHtml(r.status)}</td>
+      <td>${r.notes || ""}</td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn" data-action="edit" data-id="${r.id}" data-payload='${decodeURIComponent(payload)}'>تعديل</button>
+          <button class="btn" data-action="dup" data-id="${r.id}" data-payload='${decodeURIComponent(payload)}'>تكرار</button>
+          <button class="btn danger" data-action="del" data-id="${r.id}" data-payload='${decodeURIComponent(payload)}'>حذف</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+async function refresh() {
+  const data = await CrudService.listAll();
+  state.rows = data.map(normalizeRow);
+  renderTable();
+}
+
+function bindToolbar() {
+  ["searchBox","statusFilter","sortBy"].forEach(id => {
+    document.getElementById(id).addEventListener("input", renderTable);
+    document.getElementById(id).addEventListener("change", renderTable);
+  });
+}
+
+function initImageViewer() {
+  const backdrop = document.getElementById("imageModal");
+  const closeBtn = document.getElementById("imageModalClose");
+  const img = document.getElementById("imageModalImg");
+  function open(url) {
+    if (!url) return;
+    img.src = url;
+    backdrop.classList.add("active");
+    backdrop.setAttribute("aria-hidden","false");
+  }
+  function close() {
+    backdrop.classList.remove("active");
+    backdrop.setAttribute("aria-hidden","true");
+    img.src = "";
+  }
+  closeBtn?.addEventListener("click", close);
+  backdrop?.addEventListener("click", (e)=>{ if (e.target===backdrop) close(); });
+  return { open, close };
+}
 
 function todayISO() {
-  const d = new Date();
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth()+1).padStart(2,"0");
-  const dd = String(d.getDate()).padStart(2,"0");
-  return `${yyyy}-${mm}-${dd}`;
+  return new Date().toISOString().slice(0,10);
 }
 
-const el = {
-  addMariageBtn: document.getElementById("addMariageBtn"),
-  saveAllBtn: document.getElementById("saveAllBtn"),
-  mariagesContainer: document.getElementById("mariagesContainer"),
-  statusFilter: document.getElementById("statusFilter"),
-  sortField: document.getElementById("sortField"),
-  searchInput: document.getElementById("searchInput"),
-  tbody: document.getElementById("printedTableBody"),
-  totalsInfo: document.getElementById("totalsInfo"),
-};
+function initInputDefaults() {
+  const d = document.getElementById("in_orderdate");
+  if (d && !d.value) d.value = todayISO();
+}
 
-const state = { groups: [], rows: [] };
+function getInputValue(id) { return document.getElementById(id).value; }
 
-function makeGroup(prefill = {}) {
-  const wrap = document.createElement("div");
-  wrap.className = "mariage-card";
-  wrap.innerHTML = `
-    <div class="row">
-      <div class="field"><label>رقم الرسمة</label><input class="inp" data-k="designcode" placeholder="مثال: 13228"></div>
-      <div class="field"><label>عدد الشبلونات</label><input class="inp" data-k="screenscount" placeholder="مثال: 3"></div>
-      <div class="field"><label>رقم المرياج</label><input class="inp" data-k="mariagenumber" placeholder="مثال: 2"></div>
-      <div class="field"><label>نوع الطباعة</label><input class="inp" data-k="printtype" placeholder="مثال: بجمنت"></div>
-    </div>
-    <div class="row">
-      <div class="field"><label>تحضير الأرضية</label><input class="inp" data-k="groundprep" placeholder="أوفوايت"></div>
-      <div class="field"><label>الخامة</label><input class="inp" data-k="rawmaterial" placeholder=""></div>
-      <div class="field"><label>الجودة</label><input class="inp" data-k="quality" placeholder=""></div>
-      <div class="field"><label>الكمية (كغ)</label><input class="inp" data-k="qtykg" placeholder="400"></div>
-    </div>
-    <div class="row">
-      <div class="field"><label>تاريخ الطلب</label><input class="inp" data-k="date" type="date"></div>
-      <div class="field grow"><label>ملاحظات</label><input class="inp" data-k="notes" placeholder=""></div>
-      <div class="field"><label>الصورة</label><input class="inp" data-k="image" type="file" accept="image/*"></div>
-      <div class="field"><label>&nbsp;</label><button class="btn small danger" data-k="remove">حذف</button></div>
-    </div>
-  `;
-  // Prefill
-  wrap.querySelector('[data-k="date"]').value = prefill.date || todayISO();
-  for (const [k,v] of Object.entries(prefill)) {
-    const inp = wrap.querySelector(`[data-k="${k}"]`);
-    if (inp && inp.type !== "file") inp.value = v ?? "";
-  }
+async function saveOneMariage() {
+  const designcode = getInputValue("in_designcode").trim();
+  const screenscount = Number(getInputValue("in_screenscount") || 0);
+  const mariagenumber = Number(getInputValue("in_mariagenumber") || 0);
+  if (!designcode || !mariagenumber) { alert("أدخل رقم الرسمة ورقم المرياج"); return; }
 
-  const group = {
-    root: wrap,
-    get designcode(){ return wrap.querySelector('[data-k="designcode"]').value; },
-    get screenscount(){ return wrap.querySelector('[data-k="screenscount"]').value; },
-    get mariagenumber(){ return wrap.querySelector('[data-k="mariagenumber"]').value; },
-    get printtype(){ return wrap.querySelector('[data-k="printtype"]').value; },
-    get groundprep(){ return wrap.querySelector('[data-k="groundprep"]').value; },
-    get rawmaterial(){ return wrap.querySelector('[data-k="rawmaterial"]').value; },
-    get quality(){ return wrap.querySelector('[data-k="quality"]').value; },
-    get qtykg(){ return wrap.querySelector('[data-k="qtykg"]').value; },
-    get date(){ return wrap.querySelector('[data-k="date"]').value; },
-    get notes(){ return wrap.querySelector('[data-k="notes"]').value; },
-    get file(){ return wrap.querySelector('[data-k="image"]').files?.[0]; },
+  const row = {
+    designcode,
+    screenscount,
+    mariagenumber,
+    printtype: getInputValue("in_printtype"),
+    groundprep: getInputValue("in_groundprep"),
+    rawmaterial: getInputValue("in_rawmaterial"),
+    grade: getInputValue("in_grade"),
+    qty_kg: getInputValue("in_qtykg") ? Number(getInputValue("in_qtykg")) : null,
+    order_date: getInputValue("in_orderdate") || null,
+    status: getInputValue("in_status"),
+    notes: document.getElementById("in_notes").value,
   };
 
-  wrap.querySelector('[data-k="remove"]').addEventListener("click", () => {
-    state.groups = state.groups.filter(g => g !== group);
-    wrap.remove();
+  // image handling
+  const file = document.getElementById("in_image").files?.[0];
+  const image_key = `${designcode}|${mariagenumber}`;
+  row.image_key = image_key;
+
+  if (file) {
+    const image_path = await ImageService.uploadImage(designcode, mariagenumber, file);
+    row.image_path = image_path;
+    row.imageurl = ImageService.publicUrl(image_path);
+  } else {
+    // if image exists already for this key, do not require (duplicate by mistake)
+    // keep empty; user can update later from edit modal
+  }
+
+  await CrudService.insert(row);
+}
+
+function clearMariageFields(keepDesign=true) {
+  ["in_mariagenumber","in_printtype","in_groundprep","in_rawmaterial","in_grade","in_qtykg","in_notes"].forEach(id=>{
+    const el=document.getElementById(id);
+    if (el) el.value = "";
+  });
+  document.getElementById("in_image").value = "";
+  document.getElementById("in_status").value = "لم يتم التشكيل";
+  document.getElementById("in_orderdate").value = todayISO();
+  if (!keepDesign) {
+    document.getElementById("in_designcode").value="";
+    document.getElementById("in_screenscount").value="";
+  }
+}
+
+function initForm() {
+  const addBtn = document.getElementById("btn_addMariage");
+  const saveBtn = document.getElementById("btn_saveMariages");
+
+  addBtn.addEventListener("click", () => {
+    // this UI is single-mariage entry; "add new" just clears mariage fields
+    clearMariageFields(true);
+    const seq = document.getElementById("mariageSeqLabel");
+    seq.textContent = String((Number(seq.textContent||"1")+1));
   });
 
-  return group;
-}
-
-function addGroup() {
-  const g = makeGroup();
-  state.groups.push(g);
-  el.mariagesContainer.appendChild(g.root);
-}
-
-async function saveAll() {
-  const payloads = [];
-  for (const g of state.groups) {
-    const designcode = ImageService.arabicToEnglishDigits(g.designcode).trim();
-    const mariage = ImageService.onlyDigits(g.mariagenumber);
-    if (!designcode || !mariage) {
-      alert("يرجى إدخال رقم الرسمة ورقم المرياج.");
-      return;
-    }
-    const key = ImageService.buildImageKey(designcode, mariage);
-    const path = ImageService.buildImagePath(designcode, mariage);
-
-    let imageurl = null;
-    let image_path = null;
-
-    if (g.file) {
-      const resized = await ImageService.resizeToJpegFile(g.file, 900, 0.86);
-      await ImageService.uploadImageToPath(resized, path, true);
-      imageurl = ImageService.getPublicUrl(path);
-      image_path = path;
-    } else {
-      // If already exists, reuse
-      try {
-        if (await ImageService.storageExists(path)) {
-          imageurl = ImageService.getPublicUrl(path);
-          image_path = path;
-        }
-      } catch {}
-    }
-
-    payloads.push({
-      designcode,
-      screenscount: g.screenscount ? Number(ImageService.onlyDigits(g.screenscount)) : null,
-      mariagenumber: Number(mariage),
-      printtype: g.printtype || "",
-      groundprep: g.groundprep || "",
-      rawmaterial: g.rawmaterial || "",
-      quality: g.quality || "",
-      qtykg: g.qtykg ? Number(g.qtykg) : null,
-      date: g.date || todayISO(),
-      status: "لم يتم التشكيل",
-      notes: g.notes || "",
-      image_key: key,
-      image_path,
-      imageurl
-    });
-  }
-
-  if (!payloads.length) return;
-
-  const { error } = await sb.from(CFG.TABLE_NAME).insert(payloads);
-  if (error) {
-    console.error(error);
-    alert("فشل الحفظ: " + (error.message || error));
-    return;
-  }
-
-  el.mariagesContainer.innerHTML = "";
-  state.groups = [];
-  addGroup();
-  await refreshTable();
-}
-
-async function refreshTable() {
-  const { data, error } = await CrudService.loadPrintedTable();
-  if (error) {
-    console.error(error);
-    alert("تعذر تحميل البيانات.");
-    return;
-  }
-  const rows = [];
-  for (const r of (data || [])) rows.push(await CrudService.bestEffortBackfillImageKey(r));
-  state.rows = rows;
-  render();
-}
-
-function render() {
-  const filtered = applyFiltersAndSort(state.rows, { statusFilter: el.statusFilter, sortField: el.sortField, searchInput: el.searchInput });
-  renderPrintedTable(filtered, el.tbody, el.totalsInfo);
-}
-
-const editModal = initEditModal();
-const dupModal = initDuplicateModal();
-
-wireTableActions(el.tbody, async (action, id) => {
-  const row = state.rows.find(r => String(r.id) === String(id));
-  if (!row) return;
-  if (action === "edit") return editModal.open(row, { onSaved: refreshTable });
-  if (action === "duplicate") return dupModal.open(row, { onSaved: refreshTable });
-  if (action === "delete") {
-    if (!confirm("هل أنت متأكد من حذف الطلب؟")) return;
+  saveBtn.addEventListener("click", async () => {
     try {
-      await CrudService.deleteRow(row);
-      await refreshTable();
+      await saveOneMariage();
+      clearMariageFields(true);
+      await refresh();
+      alert("تم الحفظ.");
     } catch (e) {
       console.error(e);
-      alert("فشل الحذف.");
+      alert("حدث خطأ أثناء الحفظ. راجع Console.");
     }
-  }
+  });
+}
+
+async function main() {
+  await ensureSupabaseScript();
+
+  // make sure all modals are hidden on load
+  document.querySelectorAll(".modal-backdrop").forEach(b=>b.classList.remove("active"));
+
+  initInputDefaults();
+
+  const imageViewer = initImageViewer();
+  const editModal = initEditModal({ onSaved: refresh });
+  const dupModal = initDuplicateModal({ onSaved: refresh });
+
+  document.body.addEventListener("click", bindRowActions({
+    onEdit: (row)=>editModal.open(row),
+    onDuplicate: (row)=>dupModal.open(row),
+    onViewImage: (url)=>imageViewer.open(url),
+    refresh,
+  }));
+
+  bindToolbar();
+  initForm();
+
+  await refresh();
+}
+
+main().catch(err => {
+  console.error(err);
+  alert("تعذر تشغيل الصفحة. راجع Console.");
 });
-
-el.addMariageBtn?.addEventListener("click", addGroup);
-el.saveAllBtn?.addEventListener("click", () => saveAll().catch(console.error));
-el.statusFilter?.addEventListener("change", render);
-el.sortField?.addEventListener("change", render);
-el.searchInput?.addEventListener("input", render);
-
-// Start
-addGroup();
-refreshTable();

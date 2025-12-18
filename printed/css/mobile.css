@@ -1,0 +1,13 @@
+@media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      nav {
+        width: 100%;
+        justify-content: flex-start;
+      }
+      table { font-size: 12px; }
+      th, td { padding: 6px 4px; }
+    }

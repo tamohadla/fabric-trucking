@@ -7,3 +7,18 @@
 .modal-grid .grow{grid-column:span 2;}
 .modal-actions{display:flex;justify-content:flex-start;gap:10px;margin-top:14px;}
 @media (max-width: 820px){.modal-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.modal-grid .grow{grid-column:span 2;}}
+/* FIX: Image upload label floating in modal */
+input[type="file"] {
+  position: static !important;
+  transform: none !important;
+  width: 100%;
+}
+
+.modal label {
+  position: static !important;
+  transform: none !important;
+}
+
+.modal .modal-content {
+  overflow: auto;
+}

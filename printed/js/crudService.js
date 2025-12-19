@@ -1,45 +1,75 @@
-import { TABLE_PRINTED } from "./config.js";
-import { getSupabase } from "./supabaseClient.js";
+import { CFG } from "./config.js";
+import { sb } from "./supabaseClient.js";
+import { ImageService } from "./imageService.js";
 
-export class CrudService {
-  static async listAll() {
-    const supabase = getSupabase();
-    const { data, error } = await supabase
-      .from(TABLE_PRINTED)
-      .select("*")
-      .order("order_date", { ascending: false })
-      .order("id", { ascending: false });
-    if (error) throw error;
-    return data || [];
+async function loadPrintedTable() {
+  // Some databases may not have the same date column name; try multiple order fields to avoid 400 errors.
+  const base = sb.from(CFG.TABLE_NAME).select("*");
+  for (const field of (CFG.ORDER_FIELDS || ["date","created_at","id"])) {
+    try {
+      const res = await base.order(field, { ascending: false });
+      // If PostgREST returns 400, it will be in res.error
+      if (res?.error) throw res.error;
+      return res;
+    } catch (e) {
+      // try next field
+    }
   }
+  // Final fallback: no ordering
+  return await base;
+}
 
-  static async insert(row) {
-    const supabase = getSupabase();
-    const { data, error } = await supabase.from(TABLE_PRINTED).insert(row).select("*").single();
-    if (error) throw error;
-    return data;
+async function bestEffortBackfillImageKey(row) {
+  if (!row.image_key) {
+    const key = ImageService.buildImageKey(row.designcode, row.mariagenumber);
+    row.image_key = key;
+    try { await sb.from(CFG.TABLE_NAME).update({ image_key: key }).eq("id", row.id); } catch {}
   }
+  return row;
+}
 
-  static async update(id, patch) {
-    const supabase = getSupabase();
-    const { data, error } = await supabase.from(TABLE_PRINTED).update(patch).eq("id", id).select("*").single();
-    if (error) throw error;
-    return data;
-  }
+async function countRowsByImageKey(imageKey, excludeId = null) {
+  if (!imageKey) return 0;
+  let q = sb.from(CFG.TABLE_NAME).select("id", { count: "exact", head: true }).eq("image_key", imageKey);
+  if (excludeId != null) q = q.neq("id", excludeId);
+  const { count, error } = await q;
+  if (error) throw error;
+  return count || 0;
+}
 
-  static async remove(id) {
-    const supabase = getSupabase();
-    const { error } = await supabase.from(TABLE_PRINTED).delete().eq("id", id);
-    if (error) throw error;
-  }
+async function deleteRow(row) {
+  // Delete DB row first or later? We'll do: check image usage first, then delete row, then delete image if safe.
+  const imageKey = row.image_key || ImageService.buildImageKey(row.designcode, row.mariagenumber);
+  const imagePath = row.image_path || (row.imageurl ? ImageService.extractStoragePathFromPublicUrl(row.imageurl) : "");
+  const others = await countRowsByImageKey(imageKey, row.id);
 
-  static async countByImageKey(image_key) {
-    const supabase = getSupabase();
-    const { count, error } = await supabase
-      .from(TABLE_PRINTED)
-      .select("*", { count: "exact", head: true })
-      .eq("image_key", image_key);
-    if (error) throw error;
-    return count || 0;
+  const { error } = await sb.from(CFG.TABLE_NAME).delete().eq("id", row.id);
+  if (error) throw error;
+
+  // If no other rows reference the image, delete it (only if it's in our canonical space)
+  if (others === 0 && imagePath) {
+    // Only delete paths under STORAGE_PREFIX to avoid accidental deletes
+    if (imagePath.startsWith(CFG.STORAGE_PREFIX + "/")) {
+      try { await ImageService.deleteStoragePath(imagePath); } catch {}
+    }
   }
 }
+
+async function updateRow(id, payload) {
+  const { error } = await sb.from(CFG.TABLE_NAME).update(payload).eq("id", id);
+  if (error) throw error;
+}
+
+async function insertRow(payload) {
+  const { error } = await sb.from(CFG.TABLE_NAME).insert(payload);
+  if (error) throw error;
+}
+
+export const CrudService = {
+  loadPrintedTable,
+  bestEffortBackfillImageKey,
+  countRowsByImageKey,
+  deleteRow,
+  updateRow,
+  insertRow
+};

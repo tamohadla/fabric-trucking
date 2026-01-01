@@ -351,8 +351,23 @@ function renderTables() {
 
   // فلترة إضافية
   if (filterClientText) {
-    rows = rows.filter(o => (o.data.forWhom || "").toLowerCase().includes(filterClientText));
-  }
+  rows = rows.filter(o => {
+    const d = o.data || {};
+
+    // نجمع الحقول المطلوب البحث فيها: اسم العميل + اسم اللون + كود اللون
+    const haystackRaw = [
+      d.forWhom ?? "",
+      d.colorText ?? "",
+      d.colorCode ?? ""
+    ].join(" ").toLowerCase();
+
+    // نطبع الأرقام داخل الداتا أيضاً (لدعم بيانات قديمة ممكن تكون بأرقام عربية-هندية)
+    const haystack = normalizeArabicDigits(haystackRaw);
+
+    return haystack.includes(filterClientText);
+  });
+}
+
   if (filterQualityText) {
     rows = rows.filter(o => (o.data.quality || "").toLowerCase().includes(filterQualityText));
   }
@@ -702,4 +717,5 @@ db.collection("solid_orders")
 
 // تفعيل تحويل الأرقام الهندية → عربية لأول مرة
 setupDigitNormalization();
+
 

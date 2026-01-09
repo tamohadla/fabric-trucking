@@ -37,12 +37,58 @@
     }
     nav a.active { background: #4b7bec; }
 
-    .container {
-      max-width: 1200px;
-      margin: 20px auto 40px;
-      padding: 0 16px;
-    }
-    .card {
+/* منع أي Scroll أفقي للصفحة بسبب عنصر خارج العرض */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* خلي المحتوى ياخذ عرض الشاشة بالكامل */
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: 20px auto 40px;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+  .table-wrap{
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;                 /* التمرير الأفقي داخل الجدول فقط */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* جدول عام */
+.app-table{
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+/* لأن عندك أعمدة كثيرة وصور 150px: نضع حد أدنى للعرض */
+.app-table.is-wide{
+  min-width: 1400px;                /* عدلها حسب عدد الأعمدة عندك */
+}
+
+/* افتراضياً خليه nowrap لتماسك الأعمدة */
+.app-table th, .app-table td{
+  padding: 8px 6px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* استثناء: عمود الملاحظات الأفضل يلفّ النص لتخفيف العرض */
+.app-table td:nth-child(12){
+  white-space: normal;
+  text-align: right;
+  min-width: 220px;
+}
+	  
+	  
+	  
+	  .card {
       background: #fff;
       border-radius: 18px;
       padding: 20px 18px 24px;
@@ -330,7 +376,8 @@
       </div>
     </div>
 
-    <table>
+   <div class="table-wrap">
+	   <table class="app-table is-wide">
       <thead>
       <tr>
         <th>#</th>
@@ -350,7 +397,8 @@
       </thead>
       <tbody id="printedTableBody"></tbody>
     </table>
-
+</div>
+	   
     <div class="totals" id="totalsInfo"></div>
     <div class="msg" id="tableMessage"></div>
   </section>

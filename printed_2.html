@@ -300,55 +300,6 @@ html, body {
 .img-row img{width:86px;height:86px;object-fit:cover;border-radius:10px;border:1px solid #e5e5e5;cursor:pointer}
 .mini-note{font-size:12px;opacity:.8;margin-top:4px;line-height:1.4}
 
-/* ضروري: التمرير على الحاوية وليس على body */
-.table-wrap { overflow-x: auto; }
-
-/* عرض ثابت للعمودين (عدّل الأرقام حسب جدولك) */
-.app-table th:nth-child(1),
-.app-table td:nth-child(1){
-  width: 10px;
-  min-width: 10px;
-  max-width: 10px;
-}
-
-.app-table th:nth-child(2),
-.app-table td:nth-child(2){
-  width: 160px;         /* لو صورتك 150px خليه 160px */
-  min-width: 160px;
-  max-width: 160px;
-}
-
-/* تثبيت العمود الأول */
-.app-table th:nth-child(1),
-.app-table td:nth-child(1){
-  position: sticky;
-  left: 0;
-  background: #fff;
-  z-index: 3;
-}
-
-/* تثبيت العمود الثاني: left = عرض العمود الأول */
-.app-table th:nth-child(2),
-.app-table td:nth-child(2){
-  position: sticky;
-  left: 56px;           /* نفس عرض العمود الأول */
-  background: #fff;
-  z-index: 3;
-}
-
-/* تمييز بسيط لفاصل بصري بعد العمودين المثبتين */
-.app-table th:nth-child(2),
-.app-table td:nth-child(2){
-  box-shadow: 2px 0 0 rgba(0,0,0,0.06);
-}
-
-/* لو عندك رأس جدول sticky أيضاً، ارفع z-index للرؤوس */
-.app-table thead th{
-  position: sticky;
-  top: 0;
-  z-index: 4;
-  background: #fff;
-}
 
 
 	  

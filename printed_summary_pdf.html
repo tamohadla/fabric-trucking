@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>ملخّص رسومات المطبوع (بدون تكرار)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --card:#ffffff;
+      --ink:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --head:#111827;
+      --accent:#4b7bec;
+      --good:#22c55e;
+      --mid:#0ea5e9;
+      --bad:#f97373;
+      --shadow: 0 12px 35px rgba(15,23,42,0.08);
+      --radius: 18px;
+    }
+    body{
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+    }
+    header{
+      background:var(--head);
+      color:#fff;
+      padding:14px 20px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      position:sticky;
+      top:0;
+      z-index:10;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    header h1{margin:0;font-size:18px;}
+    nav{display:flex;gap:6px;flex-wrap:wrap;}
+    nav a{
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:13px;
+      text-decoration:none;
+      background:#374151;
+      color:#fff;
+      white-space:nowrap;
+    }
+    nav a.active{background:var(--accent);}
+    .container{
+      max-width: 1300px;
+      margin: 20px auto 40px;
+      padding: 0 16px;
+    }
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding: 18px 18px 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+    h2{margin:0 0 12px;font-size:18px;}
+    label{
+      display:block;
+      margin-bottom:4px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    input[type="text"], select{
+      width:100%;
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid #d1d5db;
+      font-size:14px;
+      box-sizing:border-box;
+      background:#f9fafb;
+    }
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;}
+    .col{flex:1;min-width:220px;}
+    .btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-start;}
+    button{
+      padding:9px 14px;
+      border-radius:999px;
+      border:none;
+      cursor:pointer;
+      font-size:14px;
+      background:var(--accent);
+      color:#fff;
+    }
+    button.secondary{background:#10b981;}
+    button.ghost{
+      background:#f3f4f6;
+      color:#111827;
+      border:1px solid #e5e7eb;
+    }
+    button:disabled{opacity:.6;cursor:default;}
+    .msg{margin-top:10px;font-size:13px;}
+    .msg.error{color:#dc2626;}
+    .msg.ok{color:#16a34a;}
+
+    table{width:100%;border-collapse:collapse;font-size:13px;}
+    thead{background:#f3f4f6;}
+    th, td{
+      padding:8px 6px;
+      border-bottom:1px solid var(--line);
+      text-align:center;
+      vertical-align:middle;
+    }
+    tr:nth-child(even){background:#fcfcfd;}
+    .thumb{
+      width:150px;height:150px;
+      border-radius:10px;
+      object-fit:cover;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:110px;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:12px;
+      color:#fff;
+      white-space:nowrap;
+    }
+    .pill.bad{background:var(--bad);}
+    .pill.mid{background:var(--mid);}
+    .pill.good{background:var(--good);}
+
+    .actions{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      align-items:stretch;
+    }
+    .small-btn{
+      
+      padding:6px 10px;
+      border-radius:10px;
+      border:1px solid #e5e7eb;
+      background:#f3f4f6;
+      color:#111827;
+      cursor:pointer;
+      font-size:13px;
+    }
+    .small-btn:hover{background:#e5e7eb;}
+    .totals{
+      margin-top:10px;
+      font-size:13px;
+      text-align:left;
+      color:#111827;
+    }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background: rgba(15,23,42,0.45);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      z-index:60;
+      padding:14px;
+    }
+    .modal{
+      background:#fff;
+      border-radius:18px;
+      padding: 16px 16px 14px;
+      width:min(980px, 96vw);
+      max-height: 92vh;
+      overflow:auto;
+      box-shadow: 0 20px 45px rgba(15,23,42,0.3);
+    }
+    .modal-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .modal-header h3{margin:0;font-size:16px;}
+    .modal-close{
+      background:transparent;border:none;color:#6b7280;font-size:24px;cursor:pointer;
+      padding:0 6px;
+    }
+    .kv{
+      display:flex;gap:12px;flex-wrap:wrap;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#f9fafb;
+      margin-bottom:12px;
+    }
+    .kv div{min-width:200px;font-size:13px;color:#111827;}
+    .kv span{color:var(--muted);}
+    .image-modal-img{
+      max-width: 92vw;
+      max-height: 92vh;
+      border-radius:16px;
+      background:#fff;
+      box-shadow: 0 20px 45px rgba(15,23,42,0.35);
+    }
+
+    @media (max-width: 768px){
+      header{flex-direction:column;align-items:flex-start;}
+      table{font-size:12px;}
+      th, td{padding:6px 4px;}
+      .thumb{width:60px;height:60px;}
+      .pill{min-width:96px;}
+    }
+  
+    .textarea{width:100%; padding:12px 14px; border-radius:14px; border:1px solid rgba(15,23,42,0.12); background:#fff; resize:vertical; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;}
+    .kbd{padding:2px 8px; border-radius:999px; background:rgba(15,23,42,0.06); border:1px solid rgba(15,23,42,0.10); font-size:12px;}
+    .hint{background:rgba(2,132,199,0.08); border:1px solid rgba(2,132,199,0.18); padding:12px 14px; border-radius:16px; margin-bottom:12px;}
+    .muted{color:rgba(15,23,42,0.65); font-size:12px;}
+    
+
+    /* --- Layout stability improvements --- */
+    *, *::before, *::after{ box-sizing: border-box; }
+
+    table{ font-variant-numeric: tabular-nums; }
+
+    .table-wrap{
+      width:100%;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    .table-wrap table{ min-width:1100px; }
+    @media (max-width: 768px){
+      .table-wrap table{ min-width:980px; }
+    }
+
+  </style>
+</head>
+<body>
+<header>
+  <h1>ملخّص رسومات المطبوع (بدون تكرار)</h1>
+  <nav>
+    <a href="index.html">قماش سادة</a>
+    <a href="printed_2.html">قماش مطبوع (التفاصيل)</a>
+    <a href="printed-summary.html" class="active">ملخّص الرسومات</a>
+  </nav>
+</header>
+
+<div class="container">
+  <section class="card">
+    <h2>البحث والفلترة والتصدير</h2>
+    <div class="row">
+      <div class="col">
+        <label for="searchInput">بحث برقم الرسمة:</label>
+        <input id="searchInput" type="text" inputmode="decimal" placeholder="مثال: 15103" />
+      </div>
+      <div class="col">
+        <label for="statusFilter">حالة الرسمة (حسب وجود طلبات):</label>
+        <select id="statusFilter">
+          <option value="">كل الرسومات</option>
+          <option value="bad">كلها لم يتم التشكيل</option>
+          <option value="mid">يوجد تم التشكيل</option>
+          <option value="good">يوجد تم الاستلام</option>
+        </select>
+      </div>
+      <div class="col">
+        <label for="stockFilter">فلترة حسب حالة المخزون:</label>
+        <select id="stockFilter">
+          <option value="">كل الحالات</option>
+          <option value="avail">متوفر (يوجد كغ أو توب)</option>
+          <option value="zero">صفر مخزون (مدخل لكن 0)</option>
+          <option value="none">غير مُدخل</option>
+        </select>
+      </div>
+      <div class="col">
+        <label for="sortField">ترتيب حسب:</label>
+        <select id="sortField">
+          <option value="last_date_desc">آخر تاريخ (الأحدث)</option>
+          <option value="last_date_asc">آخر تاريخ (الأقدم)</option>
+          <option value="design_asc">رقم الرسمة (تصاعدي)</option>
+          <option value="design_desc">رقم الرسمة (تنازلي)</option>
+          <option value="qty_desc">إجمالي الكمية (تنازلي)</option>
+          <option value="qty_asc">إجمالي الكمية (تصاعدي)</option>
+        </select>
+      </div>
+      <div class="col">
+        <div class="btns">
+          <button id="reloadBtn" class="ghost" title="إعادة تحميل من قاعدة البيانات">تحديث البيانات</button>
+          <button id="exportExcelBtn" class="secondary" title="تصدير النتائج الحالية إلى Excel">تصدير Excel</button>
+          <button id="exportPdfBtn" title="تصدير النتائج الحالية إلى PDF">تصدير PDF</button>
+          <button id="manageStockBtn" class="ghost" title="إدخال/تعديل مخزون المخزن (محلي على هذا الجهاز)">مخزون المخزن</button>
+          <span class="muted" id="stockLastUpdate" style="margin-right:10px;"></span>
+        </div>
+      </div>
+    </div>
+    <div class="msg" id="topMessage"></div>
+  </section>
+
+  <section class="card" id="summaryCard">
+    <h2>جدول الرسومات (بدون تكرار)</h2>
+    <div class="table-wrap">
+      <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>صورة</th>
+          <th>رقم الرسمة</th>
+          <th>عدد الشبلونات</th>
+          <th>عدد المرياجات</th>
+          <th>عدد طلبات التشكيل</th>
+          <th>تم تشكيلها</th>
+          <th>تم استلامها</th>
+          <th>إجمالي الكمية (كغ)</th>
+          <th>مخزون (كغ)</th>
+          <th>مخزون (توب)</th>
+          <th>آخر تاريخ</th>
+          <th>حالة الرسمة</th>
+          <th>إجراءات</th>
+        </tr>
+      </thead>
+      <tbody id="summaryBody"></tbody>
+    </table>
+    </div>
+    <div class="totals" id="totalsInfo"></div>
+    <div class="msg" id="tableMessage"></div>
+  </section>
+</div>
+
+<!-- Modal details -->
+<div id="detailsBackdrop" class="modal-backdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="detailsTitle">تفاصيل الرسمة</h3>
+      <button class="modal-close" id="detailsClose" aria-label="إغلاق">&times;</button>
+    </div>
+
+    <div class="kv" id="detailsKv"></div>
+
+    <div class="table-wrap">
+      <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>صورة</th>
+          <th>رقم المرياج</th>
+          <th>الخامة</th>
+          <th>الكمية (كغ)</th>
+          <th>تاريخ الطلب</th>
+          <th>حالة الطلب</th>
+          <th>نوع الطباعة</th>
+          <th>تحضير الأرضية</th>
+          <th>ملاحظات</th>
+        </tr>
+      </thead>
+      <tbody id="detailsBody"></tbody>
+    </table>
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <div class="col" style="min-width:260px;">
+        <button id="detailsExportExcel" class="secondary">تصدير تفاصيل Excel</button>
+        <button id="detailsExportPdf">تصدير تفاصيل PDF</button>
+      </div>
+      <div class="col" style="min-width:260px; text-align:left;">
+        <a id="openInOldPage" href="#" style="color:var(--accent); text-decoration:none; font-size:13px;">فتح في صفحة التفاصيل (printed_2)</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal image -->
+<div id="imageModal" class="modal-backdrop">
+  <img id="imageModalImg" class="image-modal-img" alt="صورة" />
+</div>
+
+<!-- Libraries (CDN) -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.29/dist/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<script>
+  /************* 1) إعداد Supabase (مطابق لملف printed_2.html) *************/
+  const SUPABASE_URL = "https://umrczwoxjhxwvrezocrm.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtcmN6d294amh4d3ZyZXpvY3JtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5ODA0MTUsImV4cCI6MjA3OTU1NjQxNX0.88PDM2h93rhGhOxVRDa5q3rismemqJJEpmBdwWmfgVQ";
+  const TABLE_NAME = "printed_mariages";
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  /************* 2) أدوات مساعدة *************/
+  function normalizeArabicDigits(str) {
+    if (!str) return str;
+    const map = {"٠":"0","١":"1","٢":"2","٣":"3","٤":"4","٥":"5","٦":"6","٧":"7","٨":"8","٩":"9"};
+    return String(str).replace(/[٠-٩]/g, ch => map[ch] ?? ch);
+  }
+
+  function safeNum(n){
+    const x = Number(n);
+    return Number.isFinite(x) ? x : 0;
+  }
+  /************* Local Stock Overlay (no DB write) *************/
+  const STOCK_KEY = "printed_stock_map_v1";
+
+  function loadStock(){
+    // مخزون محلي داخل الصفحة فقط (لا يعتمد على localStorage لتفادي مشاكل الحظر/الخصوصية)
+    if(window.__stockOverlay && window.__stockOverlay.items){
+      return window.__stockOverlay;
+    }
+    return { updatedAt: null, items: {} };
+  }
+
+  function saveStock(items){
+    const updatedAt = new Date().toISOString();
+    window.__stockOverlay = { updatedAt, items };
+    updateStockLastUpdate();
+  }
+
+  function clearStock(){
+    window.__stockOverlay = null;
+    updateStockLastUpdate();
+  }
+
+  function updateStockLastUpdate(){
+    const el = document.getElementById("stockLastUpdate");
+    if(!el) return;
+    const s = loadStock();
+    if(!s.updatedAt){
+      el.textContent = "المخزون: لا يوجد بيانات (داخل الصفحة)";
+      return;
+    }
+    const d = new Date(s.updatedAt);
+    el.textContent = `آخر تحديث للمخزون (داخل الصفحة): ${d.toLocaleString("ar-EG")}`;
+  }
+
+function stockToTsv(items){
+    const lines = ["designcode\tkg\ttobs"];
+    Object.keys(items).sort((a,b)=>a.localeCompare(b, "ar")).forEach(k=>{
+      const it = items[k] || {};
+      const kg = (it.kg ?? "").toString();
+      const tobs = (it.tobs ?? "").toString();
+      lines.push(`${k}\t${kg}\t${tobs}`);
+    });
+    return lines.join("\n");
+  }
+
+  function parseStockText(text){
+    const items = {};
+    const rows = (text || "").split(/\r?\n/).map(r=>r.trim()).filter(Boolean);
+    for(const row of rows){
+      const cols = row.split(/\t|,|;|\||\/|،|\s{2,}/).map(c=>c.trim()).filter(c=>c!== "");
+      if(cols.length < 2) continue;
+      const design = normalizeArabicDigits(cols[0]).toString().trim();
+      if(!design || design.toLowerCase() === "designcode") continue;
+
+      const kgRaw = cols[1] ?? "";
+      const tobsRaw = cols[2] ?? "";
+
+      const kgNum = Number(normalizeArabicDigits(kgRaw).toString().trim().replace(/,/g,".").replace(/[^\d.\-]/g,""));
+      const tobsNum = Number(normalizeArabicDigits(tobsRaw).toString().trim().replace(/,/g,".").replace(/[^\d.\-]/g,""));
+
+      items[design] = {
+        kg: Number.isFinite(kgNum) ? kgNum : kgRaw,
+        tobs: Number.isFinite(tobsNum) ? tobsNum : tobsRaw
+      };
+    }
+    return items;
+  }
+
+
+
+  function groupStatus(group){
+    const hasReceived = group.some(r => (r.status || "") === "تم الاستلام");
+    const hasPrinted  = group.some(r => (r.status || "") === "تم التشكيل");
+    if (hasReceived) return {key:"good", label:"يوجد تم الاستلام"};
+    if (hasPrinted)  return {key:"mid",  label:"يوجد تم التشكيل"};
+    return {key:"bad", label:"كلها لم يتم التشكيل"};
+  }
+
+  function pickRepresentativeImage(group){
+    // الأفضل: أحدث سجل لديه صورة
+    const withImg = group.filter(r => r.imageurl);
+    if (!withImg.length) return null;
+    withImg.sort((a,b) => String(b.date||"").localeCompare(String(a.date||"")));
+    return withImg[0].imageurl || null;
+  }
+
+  function maxDate(group){
+    let m = "";
+    group.forEach(r => {
+      const d = String(r.date || "");
+      if (d && d.localeCompare(m) > 0) m = d;
+    });
+    return m || "—";
+  }
+
+  /************* 3) تحميل كل البيانات (مع دعم أكثر من 1000 سجل) *************/
+  async function fetchAllRows(){
+    const pageSize = 1000;
+    let from = 0;
+    let all = [];
+    while(true){
+      const { data, error } = await supabaseClient
+        .from(TABLE_NAME)
+        .select("*")
+        .range(from, from + pageSize - 1);
+
+      if (error) throw error;
+      if (!data || !data.length) break;
+
+      all = all.concat(data);
+      if (data.length < pageSize) break;
+      from += pageSize;
+    }
+    return all;
+  }
+
+  /************* 4) بناء الملخّص (Group By designcode) *************/
+  let rawRows = [];
+  let summaryRows = [];
+  let filteredSummary = [];
+
+  function buildSummary(rows){
+    const map = new Map();
+    const stockAll = loadStock().items;
+    rows.forEach(r => {
+      const design = (r.designcode || "").trim();
+      if (!design) return;
+      if (!map.has(design)) map.set(design, []);
+      map.get(design).push(r);
+    });
+
+    const out = [];
+    map.forEach((group, designcode) => {
+      const screensVals = group.map(r => r.screenscount).filter(v => v !== null && v !== undefined && v !== "");
+      const screenscount = screensVals.length ? screensVals[0] : null;
+
+      const mariageSet = new Set();
+      group.forEach(r => {
+        const m = (r.mariagenumber || "").toString().trim();
+        if (m) mariageSet.add(m);
+      });
+
+      const totalOrders = group.length;
+      const printedCount = group.filter(r => (r.status || "") === "تم التشكيل").length;
+      const receivedCount = group.filter(r => (r.status || "") === "تم الاستلام").length;
+      const totalQty = group.reduce((acc, r) => acc + safeNum(r.qtykg), 0);
+
+      const stock = stockAll[designcode] || null;
+
+      const stockExists = Object.prototype.hasOwnProperty.call(stockAll, designcode);
+      const kgNum = (stock && stock.kg !== undefined && stock.kg !== null && stock.kg !== "") ? Number(stock.kg) : 0;
+      const tobsNum = (stock && stock.tobs !== undefined && stock.tobs !== null && stock.tobs !== "") ? Number(stock.tobs) : 0;
+      let stockStateKey = "none";
+      let stockStateLabel = "غير مُدخل";
+      if (stockExists){
+        if ((Number.isFinite(kgNum) && kgNum !== 0) || (Number.isFinite(tobsNum) && tobsNum !== 0)){
+          stockStateKey = "avail";
+          stockStateLabel = "متوفر";
+        } else {
+          stockStateKey = "zero";
+          stockStateLabel = "صفر";
+        }
+      }
+
+      const status = groupStatus(group);
+      const img = pickRepresentativeImage(group);
+      const last = maxDate(group);
+
+      out.push({
+        designcode,
+        screenscount,
+        mariagesCount: mariageSet.size,
+        ordersCount: totalOrders,
+        printedCount,
+        receivedCount,
+        totalQty,
+        stockKg: stock && stock.kg !== undefined ? stock.kg : null,
+        stockTobs: stock && stock.tobs !== undefined ? stock.tobs : null,
+        stockKgDisplay: (stock && stock.kg !== undefined && stock.kg !== null && stock.kg !== "" ? String(stock.kg) : "—"),
+        stockTobsDisplay: (stock && stock.tobs !== undefined && stock.tobs !== null && stock.tobs !== "" ? String(stock.tobs) : "—"),
+        stockStateKey,
+        stockStateLabel,
+        lastDate: last,
+        statusKey: status.key,
+        statusLabel: status.label,
+        imageurl: img,
+        _group: group
+      });
+    });
+
+    return out;
+  }
+
+  function applyFiltersAndSort(){
+    const q = normalizeArabicDigits(document.getElementById("searchInput").value.trim());
+    const status = document.getElementById("statusFilter").value;
+    const stockFilter = document.getElementById("stockFilter") ? document.getElementById("stockFilter").value : "";
+    const sort = document.getElementById("sortField").value;
+
+    let rows = summaryRows.slice();
+
+    if (q){
+      rows = rows.filter(r => (r.designcode || "").includes(q));
+    }
+    if (status){
+      rows = rows.filter(r => r.statusKey === status);
+    }
+
+    if (stockFilter){
+      rows = rows.filter(r => (r.stockStateKey || "none") === stockFilter);
+    }
+
+    if (sort === "last_date_desc"){
+      rows.sort((a,b) => String(b.lastDate||"").localeCompare(String(a.lastDate||"")) || String(a.designcode).localeCompare(String(b.designcode)));
+    } else if (sort === "last_date_asc"){
+      rows.sort((a,b) => String(a.lastDate||"").localeCompare(String(b.lastDate||"")) || String(a.designcode).localeCompare(String(b.designcode)));
+    } else if (sort === "design_asc"){
+      rows.sort((a,b) => String(a.designcode).localeCompare(String(b.designcode)));
+    } else if (sort === "design_desc"){
+      rows.sort((a,b) => String(b.designcode).localeCompare(String(a.designcode)));
+    } else if (sort === "qty_desc"){
+      rows.sort((a,b) => (b.totalQty - a.totalQty) || String(a.designcode).localeCompare(String(b.designcode)));
+    } else if (sort === "qty_asc"){
+      rows.sort((a,b) => (a.totalQty - b.totalQty) || String(a.designcode).localeCompare(String(b.designcode)));
+    }
+
+    return rows;
+  }
+
+  /************* 5) الرندر *************/
+  const summaryBody = document.getElementById("summaryBody");
+  const totalsInfo = document.getElementById("totalsInfo");
+  const tableMessage = document.getElementById("tableMessage");
+  const topMessage = document.getElementById("topMessage");
+
+  function renderSummary(){
+    filteredSummary = applyFiltersAndSort();
+    summaryBody.innerHTML = "";
+
+    let sumOrders = 0;
+    let sumMariages = 0;
+    let sumQty = 0;
+
+    filteredSummary.forEach((r, idx) => {
+      sumOrders += safeNum(r.ordersCount);
+      sumMariages += safeNum(r.mariagesCount);
+      sumQty += safeNum(r.totalQty);
+
+      const pillClass = r.statusKey === "good" ? "good" : (r.statusKey === "mid" ? "mid" : "bad");
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${idx + 1}</td>
+        <td>${r.imageurl ? `<img class="thumb js-open-image" data-src="${r.imageurl}" src="${r.imageurl}" alt="رسمة ${r.designcode}">` : "—"}</td>
+        <td>${r.designcode}</td>
+        <td>${r.screenscount ?? "—"}</td>
+        <td>${r.mariagesCount}</td>
+        <td>${r.ordersCount}</td>
+        <td>${r.printedCount}</td>
+        <td>${r.receivedCount}</td>
+        <td>${(Math.round(r.totalQty * 100) / 100).toString()}</td>
+        <td>${r.stockKgDisplay}</td>
+        <td>${r.stockTobsDisplay}</td>
+        <td>${r.lastDate}</td>
+        <td><span class="pill ${pillClass}">${r.statusLabel}</span></td>
+        <td>
+          <div class="actions">
+            <button class="small-btn js-details" data-design="${r.designcode}">تفاصيل</button>
+          </div>
+        </td>
+      `;
+      summaryBody.appendChild(tr);
+    });
+
+    totalsInfo.textContent = `عدد الرسومات: ${filteredSummary.length} | مجموع عدد المرياجات (distinct): ${sumMariages} | مجموع طلبات التشكيل: ${sumOrders} | إجمالي الكمية: ${Math.round(sumQty*100)/100} كغ`;
+  }
+
+  /************* 6) تفاصيل الرسمة (Modal) *************/
+  const detailsBackdrop = document.getElementById("detailsBackdrop");
+  const detailsClose = document.getElementById("detailsClose");
+  const detailsTitle = document.getElementById("detailsTitle");
+  const detailsBody = document.getElementById("detailsBody");
+  const detailsKv = document.getElementById("detailsKv");
+  const openInOldPage = document.getElementById("openInOldPage");
+
+  let currentDetails = null;
+
+  function openDetails(designcode){
+    const r = summaryRows.find(x => x.designcode === designcode);
+    if (!r) return;
+    currentDetails = r;
+
+    detailsTitle.textContent = `تفاصيل الرسمة: ${r.designcode}`;
+    openInOldPage.href = `printed_2.html#design=${encodeURIComponent(r.designcode)}`;
+    openInOldPage.onclick = (e) => {
+      // فتح الصفحة القديمة مع بحث تلقائي إذا رغبت لاحقاً (حالياً مجرد Anchor)
+      // نتركه كـ link عادي.
+    };
+
+    const pillClass = r.statusKey === "good" ? "good" : (r.statusKey === "mid" ? "mid" : "bad");
+
+    detailsKv.innerHTML = `
+      <div><span>عدد الشبلونات:</span> ${r.screenscount ?? "—"}</div>
+      <div><span>عدد المرياجات:</span> ${r.mariagesCount}</div>
+      <div><span>عدد طلبات التشكيل:</span> ${r.ordersCount}</div>
+      <div><span>إجمالي الكمية:</span> ${Math.round(r.totalQty*100)/100} كغ</div>
+      <div><span>آخر تاريخ:</span> ${r.lastDate}</div>
+      <div><span>الحالة:</span> <span class="pill ${pillClass}" style="vertical-align:middle;">${r.statusLabel}</span></div>
+    `;
+
+    // ترتيب التفاصيل حسب التاريخ الأحدث
+    const rows = (r._group || []).slice().sort((a,b) => String(b.date||"").localeCompare(String(a.date||"")));
+    detailsBody.innerHTML = "";
+    rows.forEach((x, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${i+1}</td>
+        <td>${x.imageurl ? `<img class="thumb js-open-image" data-src="${x.imageurl}" src="${x.imageurl}" alt="مرياج">` : "—"}</td>
+        <td>${x.mariagenumber ?? "—"}</td>
+        <td>${x.quality ?? "—"}</td>
+        <td>${x.qtykg ?? "—"}</td>
+        <td>${x.date ?? "—"}</td>
+        <td>${x.status ?? "—"}</td>
+        <td>${x.printtype ?? "—"}</td>
+        <td>${x.groundprep ?? "—"}</td>
+        <td style="text-align:right;">${x.notes ?? "—"}</td>
+      `;
+      detailsBody.appendChild(tr);
+    });
+
+    detailsBackdrop.style.display = "flex";
+  }
+
+  function closeDetails(){
+    detailsBackdrop.style.display = "none";
+    currentDetails = null;
+  }
+
+  detailsClose.addEventListener("click", closeDetails);
+  detailsBackdrop.addEventListener("click", (e) => {
+    if (e.target === detailsBackdrop) closeDetails();
+  });
+
+  /************* 7) تكبير الصور (Modal) *************/
+  const imageModal = document.getElementById("imageModal");
+  const imageModalImg = document.getElementById("imageModalImg");
+
+  function openImage(src){
+    if (!src) return;
+    imageModalImg.src = src;
+    imageModal.style.display = "flex";
+  }
+  function closeImage(){
+    imageModal.style.display = "none";
+    imageModalImg.src = "";
+  }
+  imageModal.addEventListener("click", closeImage);
+
+  document.addEventListener("click", (e) => {
+    const img = e.target.closest(".js-open-image");
+    if (img){
+      openImage(img.dataset.src || img.src);
+      return;
+    }
+    const btn = e.target.closest(".js-details");
+    if (btn){
+      openDetails(btn.dataset.design);
+      return;
+    }
+  });
+
+  /************* 8) التصدير (Excel / PDF) *************/
+  function exportSummaryToExcel(){
+    const rows = filteredSummary.map(r => ({
+      "رقم الرسمة": r.designcode,
+      "عدد الشبلونات": r.screenscount ?? "",
+      "عدد المرياجات": r.mariagesCount,
+      "عدد طلبات التشكيل": r.ordersCount,
+      "تم تشكيلها": r.printedCount,
+      "تم استلامها": r.receivedCount,
+      "إجمالي الكمية (كغ)": Math.round(r.totalQty*100)/100,
+      "مخزون (كغ)": (r.stockKg ?? ""),
+      "مخزون (توب)": (r.stockTobs ?? ""),
+      "آخر تاريخ": r.lastDate,
+      "حالة الرسمة": r.statusLabel,
+      "رابط الصورة": r.imageurl ?? ""
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Printed Summary");
+    XLSX.writeFile(wb, "printed_summary.xlsx");
+  }
+
+  function exportDetailsToExcel(){
+    if (!currentDetails) return;
+    const rows = (currentDetails._group || []).slice().sort((a,b) => String(b.date||"").localeCompare(String(a.date||"")))
+      .map(x => ({
+        "رقم الرسمة": currentDetails.designcode,
+        "عدد الشبلونات": currentDetails.screenscount ?? "",
+        "رقم المرياج": x.mariagenumber ?? "",
+        "الخامة": x.quality ?? "",
+        "الكمية (كغ)": x.qtykg ?? "",
+        "تاريخ الطلب": x.date ?? "",
+        "حالة الطلب": x.status ?? "",
+        "نوع الطباعة": x.printtype ?? "",
+        "تحضير الأرضية": x.groundprep ?? "",
+        "ملاحظات": x.notes ?? "",
+        "رابط الصورة": x.imageurl ?? ""
+      }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, `Design ${currentDetails.designcode}`);
+    XLSX.writeFile(wb, `printed_design_${currentDetails.designcode}.xlsx`);
+  }
+
+  
+  async function exportElementAsPdf(el, filename, options = {}){
+    const { jsPDF } = window.jspdf;
+    const orientation = options.orientation || "landscape";
+    const doc = new jsPDF({ orientation, unit: "pt", format: "a4" });
+
+    // إظهار حالة التحميل
+    const msgEl = document.getElementById("tableMessage");
+    const prevMsg = msgEl ? msgEl.textContent : "";
+    if(msgEl) msgEl.textContent = "جارٍ تجهيز ملف PDF...";
+
+    const capture = async (hideImages) => {
+      return await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: "#ffffff",
+        scrollX: 0,
+        scrollY: -window.scrollY,
+        onclone: (clonedDoc) => {
+          // تثبيت اتجاه RTL داخل النسخة المستنسخة
+          clonedDoc.documentElement.setAttribute("dir","rtl");
+          clonedDoc.body.setAttribute("dir","rtl");
+          if (hideImages) {
+            clonedDoc.querySelectorAll("img").forEach(img => { img.style.visibility = "hidden"; });
+          }
+        }
+      });
+    };
+
+    const addCanvas = (canvas) => {
+      const pageW = doc.internal.pageSize.getWidth();
+      const pageH = doc.internal.pageSize.getHeight();
+      const margin = 24;
+
+      const innerW = pageW - margin * 2;
+      const innerH = pageH - margin * 2;
+
+      // نُثبّت العرض على عرض الصفحة (بالنقاط) ثم نحسب كم بيكسل يدخل في ارتفاع الصفحة بدون أي تداخل
+      const ptPerPx = innerW / canvas.width; // نقاط لكل بيكسل
+      const pageInnerHPx = Math.max(1, Math.floor(innerH / ptPerPx));
+
+      let offsetY = 0;
+      let pageIndex = 0;
+
+      while (offsetY < canvas.height) {
+        const sliceH = Math.min(pageInnerHPx, canvas.height - offsetY);
+
+        // قصّ جزء من الكانفاس لكل صفحة (بدون overlap) لتفادي تكرار الصفوف/الخلايا
+        const slice = document.createElement('canvas');
+        slice.width = canvas.width;
+        slice.height = sliceH;
+        const ctx = slice.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, slice.width, slice.height);
+        ctx.drawImage(canvas, 0, offsetY, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
+
+        const imgData = slice.toDataURL('image/jpeg', 0.92);
+        const imgH = sliceH * ptPerPx;
+
+        if (pageIndex > 0) doc.addPage();
+        doc.addImage(imgData, 'JPEG', margin, margin, innerW, imgH);
+
+        offsetY += sliceH;
+        pageIndex += 1;
+      }
+};
+
+    try{
+      const canvas = await capture(false);
+      addCanvas(canvas);
+      doc.save(filename);
+      if(msgEl) msgEl.textContent = prevMsg || "تم تصدير PDF.";
+    }catch(err){
+      // أحياناً صور Supabase قد تمنع الالتقاط (CORS)، نعيد المحاولة بدون الصور
+      try{
+        const canvas = await capture(true);
+        addCanvas(canvas);
+        doc.save(filename);
+        if(msgEl) msgEl.textContent = "تم تصدير PDF (بدون الصور بسبب قيود المتصفح على الصور الخارجية).";
+      }catch(err2){
+        if(msgEl) msgEl.textContent = "تعذر تصدير PDF. راجع Console للتفاصيل.";
+        console.error("PDF export failed:", err, err2);
+        alert("تعذر تصدير PDF. تفاصيل: " + (err2?.message || err2));
+      }
+    }
+  }
+
+
+  async function exportSummaryToPdf(){
+    const card = document.getElementById("summaryCard") || document.querySelector("section.card");
+    const el = card ? card.querySelector("table") : document.querySelector("table");
+    if(!el) return;
+    await exportElementAsPdf(el, "printed_designs_summary.pdf", { orientation: "landscape" });
+  }
+
+
+  
+  async function exportDetailsToPdf(){
+    if (!currentDetails) return;
+    const modal = document.getElementById("detailsBackdrop");
+    const el = modal ? modal.querySelector("table") : document.querySelector("table");
+    if(!el) return;
+    await exportElementAsPdf(el, `printed_design_${currentDetails.designcode}.pdf`, { orientation: "landscape" });
+  }
+
+
+  document.getElementById("exportExcelBtn").addEventListener("click", exportSummaryToExcel);
+  document.getElementById("exportPdfBtn").addEventListener("click", exportSummaryToPdf);
+  document.getElementById("detailsExportExcel").addEventListener("click", exportDetailsToExcel);
+  document.getElementById("detailsExportPdf").addEventListener("click", exportDetailsToPdf);
+
+  /************* 9) التهيئة *************/
+  async function loadAndRender(){
+    topMessage.textContent = "جاري تحميل البيانات من Supabase...";
+    topMessage.className = "msg";
+    tableMessage.textContent = "";
+    document.getElementById("exportExcelBtn").disabled = true;
+    document.getElementById("exportPdfBtn").disabled = true;
+
+    try{
+      rawRows = await fetchAllRows();
+      summaryRows = buildSummary(rawRows);
+      renderSummary();
+
+      topMessage.textContent = `تم تحميل ${rawRows.length} سجل، وتحويلها إلى ${summaryRows.length} رسمة بدون تكرار.`;
+      topMessage.className = "msg ok";
+      document.getElementById("exportExcelBtn").disabled = false;
+      document.getElementById("exportPdfBtn").disabled = false;
+    }catch(err){
+      console.error(err);
+      topMessage.textContent = "حدث خطأ أثناء تحميل البيانات. تأكد من اتصال الإنترنت وسياسات Supabase.";
+      topMessage.className = "msg error";
+    }
+  }
+
+  document.getElementById("reloadBtn").addEventListener("click", loadAndRender);
+  document.getElementById("searchInput").addEventListener("input", renderSummary);
+  document.getElementById("statusFilter").addEventListener("change", renderSummary);
+document.getElementById("stockFilter").addEventListener("change", renderSummary);
+  document.getElementById("sortField").addEventListener("change", renderSummary);
+
+  // ملاحظة: في صفحة printed_2 الحالية لا يوجد استقبال للهاش #design
+  // إذا رغبت، يمكننا لاحقاً تعديل printed_2 لتقرأ hash وتضع البحث تلقائياً.
+
+  (async function init(){
+    // تطبيع الأرقام في البحث
+    const s = document.getElementById("searchInput");
+    s.addEventListener("input", () => {
+      const cur = s.value;
+      const norm = normalizeArabicDigits(cur);
+      if (norm !== cur){
+        const pos = s.selectionStart;
+        s.value = norm;
+        try{ s.setSelectionRange(pos, pos); }catch(e){}
+      }
+    });
+
+    await loadAndRender();
+
+    /***** Stock modal wiring *****/
+    const manageStockBtn = document.getElementById("manageStockBtn");
+    const stockBackdrop = document.getElementById("stockBackdrop");
+    const stockCloseBtn = document.getElementById("stockCloseBtn");
+    const stockApplyBtn = document.getElementById("stockApplyBtn");
+    const stockExportBtn = document.getElementById("stockExportBtn");
+    const stockClearBtn = document.getElementById("stockClearBtn");
+    const stockPasteArea = document.getElementById("stockPasteArea");
+    const stockModalMsg = document.getElementById("stockModalMsg");
+
+    function openStockModal(){
+      const s = loadStock();
+      stockPasteArea.value = stockToTsv(s.items);
+      stockModalMsg.textContent = "";
+      stockBackdrop.style.display = "flex";
+      stockPasteArea.focus();
+      stockPasteArea.select();
+    }
+    function closeStockModal(){
+      stockBackdrop.style.display = "none";
+    }
+
+    manageStockBtn?.addEventListener("click", openStockModal);
+    stockCloseBtn?.addEventListener("click", closeStockModal);
+    stockBackdrop?.addEventListener("click", (e)=>{ if(e.target === stockBackdrop) closeStockModal(); });
+
+    stockApplyBtn?.addEventListener("click", ()=>{
+      try{
+        const parsed = parseStockText(stockPasteArea.value || "");
+        const count = Object.keys(parsed).length;
+
+        if(!count){
+          stockModalMsg.textContent = "لم يتم التعرف على أي بيانات. استخدم: رقم الرسمة ثم كغ ثم توب (Tabs من Excel أو فواصل , ; | /).";
+          return;
+        }
+
+        saveStock(parsed);
+
+        // رسالة أوضح لو كان التخزين سقط على fallback
+        stockModalMsg.textContent = `تم التطبيق: ${count} رسمة (داخل الصفحة)`;
+
+        if(rawRows && rawRows.length){
+          summaryRows = buildSummary(rawRows);
+          renderSummary();
+        }
+      }
+      catch(err){
+        console.error("Stock apply error:", err);
+        const msg = (err && (err.name || err.message)) ? `${err.name || "Error"}: ${err.message || ""}`.trim() : String(err);
+        stockModalMsg.textContent = "تعذر التطبيق. تفاصيل: " + msg;
+      }
+    });
+
+    stockClearBtn?.addEventListener("click", ()=>{
+      clearStock();
+      stockPasteArea.value = "designcode\tkg\ttobs\n";
+      stockModalMsg.textContent = "تم مسح المخزون المحلي";
+      if(rawRows && rawRows.length){
+        summaryRows = buildSummary(rawRows);
+        renderSummary();
+      }
+    });
+
+    stockExportBtn?.addEventListener("click", ()=>{
+      const s = loadStock();
+      const rows = Object.keys(s.items).sort((a,b)=>a.localeCompare(b, "ar")).map((k)=>({
+        "رقم الرسمة": k,
+        "مخزون (كغ)": s.items[k]?.kg ?? "",
+        "مخزون (توب)": s.items[k]?.tobs ?? ""
+      }));
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Stock Local");
+      XLSX.writeFile(wb, "stock_local.xlsx");
+    });
+
+    updateStockLastUpdate();
+
+loadAndRender();
+  })();
+</script>
+
+  <!-- Stock Management Modal -->
+  <div class="backdrop" id="stockBackdrop" style="display:none;">
+    <div class="modal" style="max-width:980px;">
+      <div class="modal-head">
+        <div>
+          <div class="title">مخزون المخزن (محلي)</div>
+          <div class="sub">ألصق بياناتك من Excel مباشرة. لن تُحفظ في قاعدة البيانات، بل تُحفظ محلياً في المتصفح على هذا الجهاز.</div>
+        </div>
+        <button class="icon-btn" id="stockCloseBtn" aria-label="إغلاق">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="hint">
+          <b>الصيغة المقترحة:</b> 3 أعمدة بالترتيب: <span class="kbd">رقم الرسمة</span> ثم <span class="kbd">مخزون كغ</span> ثم <span class="kbd">مخزون توب</span>.
+          يمكنك النسخ من Excel (Tabs) أو CSV (فواصل). مثال:
+          <div style="margin-top:8px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size:12px; background:#0b1220; color:#e5e7eb; padding:10px; border-radius:10px; direction:ltr;">
+15103\t1200\t48<br>
+15559\t350\t14
+          </div>
+        </div>
+
+        <textarea id="stockPasteArea" class="textarea" rows="10" placeholder="ألصق هنا (DesignCode\tKg\tTobs)"></textarea>
+
+        <div class="row" style="margin-top:12px; gap:10px; display:flex; flex-wrap:wrap; align-items:center;">
+          <button id="stockApplyBtn" class="primary">تطبيق وعرض المخزون</button>
+          <button id="stockExportBtn" class="secondary">تصدير المخزون (Excel)</button>
+          <button id="stockClearBtn" class="ghost">مسح المخزون المحلي</button>
+          <span class="muted" id="stockModalMsg"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

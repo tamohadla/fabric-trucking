@@ -377,10 +377,15 @@ html, body {
           <option value="designcode_desc">رقم الرسمة (تنازلي)</option>
         </select>
       </div>
+		<div class="toolbar">
+  <button type="button" id="btnExportFormationsPdf" class="btn">تصدير PDF</button>
+  <button type="button" id="btnExportFormationsImg" class="btn">تصدير صورة</button>
+</div>
+
     </div>
 
    <div class="table-wrap">
-	   <table class="app-table is-wide">
+	   <table id="printedFormationsTable" class="app-table is-wide">
       <thead>
       <tr>
         <th>#</th>
@@ -629,7 +634,11 @@ html, body {
 
 <!-- Supabase JS v2 -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
+
+	/************* تصدير ك صورة*************/
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+	<script>
   /************* 1) إعداد Supabase *************/
   const SUPABASE_URL = "https://umrczwoxjhxwvrezocrm.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtcmN6d294amh4d3ZyZXpvY3JtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5ODA0MTUsImV4cCI6MjA3OTU1NjQxNX0.88PDM2h93rhGhOxVRDa5q3rismemqJJEpmBdwWmfgVQ"; // حطي الـ anon key تبعك هنا لو مو موجود
@@ -644,6 +653,7 @@ html, body {
     const dd = String(d.getDate()).padStart(2, "0");
     return `${yyyy}-${mm}-${dd}`;
   }
+
 
   /************* 2) تحويل الأرقام الهندية إلى عادية *************/
   function normalizeArabicDigits(str) {
@@ -1643,6 +1653,96 @@ editCurrentImage.style.display = "block";
     setupDigitNormalization();
     await loadPrintedTable();
   })();
+
+	/************* تصدير الجدول لملف او صورة *************/	
+function getPrintedFormationsTable() {
+  const table = document.getElementById('printedFormationsTable');
+  if (!table) throw new Error('لم يتم العثور على جدول: printedFormationsTable');
+  return table;
+}
+
+/* ---------- PDF (Option B: Print) ---------- */
+function exportPrintedFormationsPdf() {
+  const table = getPrintedFormationsTable();
+
+  const clone = table.cloneNode(true);
+
+  // احذف أي عناصر لا تريدها داخل التصدير (إن كنت تستخدم .no-print / .no-export)
+  clone.querySelectorAll('.no-print, .no-export').forEach(el => el.remove());
+
+  const w = window.open('', '_blank');
+  if (!w) {
+    alert('المتصفح منع فتح نافذة جديدة. فعّل Popups ثم أعد المحاولة.');
+    return;
+  }
+
+  w.document.open();
+  w.document.write(`
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <title>تشكيلات المطبوع</title>
+  <style>
+    @page { size: A4 landscape; margin: 10mm; }
+    body { font-family: Arial, sans-serif; direction: rtl; margin: 0; }
+    .wrap { padding: 10mm; }
+    h2 { margin: 0 0 10px; font-size: 14pt; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 6px; font-size: 10pt; white-space: nowrap; vertical-align: middle; }
+    thead { display: table-header-group; }
+    tr { page-break-inside: avoid; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h2>تشكيلات المطبوع</h2>
+  </div>
+</body>
+</html>
+  `);
+
+  w.document.body.querySelector('.wrap').appendChild(clone);
+  w.document.close();
+
+  w.onload = () => {
+    w.focus();
+    w.print();
+  };
+}
+
+/* ---------- Image (PNG) ---------- */
+async function exportPrintedFormationsImage() {
+  const table = getPrintedFormationsTable();
+
+  // لو عندك عمود إجراءات أو عناصر لا تريدها في الصورة ضع لها class="no-export"
+  const toHide = table.querySelectorAll('.no-export, .no-print');
+  toHide.forEach(el => el.classList.add('no-export'));
+
+  try {
+    const canvas = await html2canvas(table, {
+      scale: 2,
+      backgroundColor: '#ffffff',
+      useCORS: true
+    });
+
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = `printed-formations-${new Date().toISOString().slice(0,10)}.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  } finally {
+    toHide.forEach(el => el.classList.remove('no-export'));
+  }
+}
+
+/* ---------- Bind Buttons ---------- */
+document.getElementById('btnExportFormationsPdf')?.addEventListener('click', exportPrintedFormationsPdf);
+document.getElementById('btnExportFormationsImg')?.addEventListener('click', exportPrintedFormationsImage);
+
+		
 </script>
 </body>
 </html>

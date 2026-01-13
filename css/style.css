@@ -307,7 +307,7 @@ tr:nth-child(even) {
 .totals {
   margin-top: 6px;
   font-size: 13px;
-  text-align: left;
+  text-align: right;
   color: #111827;
 }
 
@@ -343,4 +343,5 @@ tr:nth-child(even) {
 .hidden {
   display: none;
 }
+
 

@@ -324,10 +324,11 @@ function renderTables() {
       <td data-label="#">${i + 1}</td>
       <td class="wrap-cell" data-label="اللون">${d.colorText || "—"}</td>
       <td data-label="كود اللون">${d.colorCode || "—"}</td>
-      <td class="wrap-cell" data-label="لصالح مين">${d.forWhom || "—"}</td>
+      
       <td class="wrap-cell" data-label="الخامة">${d.quality || "—"}</td>
       <td data-label="الكمية (كغ)">${d.qtyKg ?? "—"}</td>
       <td data-label="تاريخ الطلب">${d.date || "—"}</td>
+      <td class="wrap-cell" data-label="لصالح مين">${d.forWhom || "—"}</td>
       <td data-label="الحالة">
         <span class="status-pill status-lab">تم طلب المخبريات</span>
       </td>
@@ -717,5 +718,6 @@ db.collection("solid_orders")
 
 // تفعيل تحويل الأرقام الهندية → عربية لأول مرة
 setupDigitNormalization();
+
 
 

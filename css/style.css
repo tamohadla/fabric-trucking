@@ -180,7 +180,7 @@ tr:nth-child(even) {
 .status-pill {
   display: inline-block;
   padding: 6px 10px;
-  border-radius: 999px;
+  border-radius: 4px;
   font-size: 11px;
   font-weight: 600;
   color: #fff;
@@ -215,10 +215,10 @@ tr:nth-child(even) {
 /* أزرار صغيرة داخل الجدول */
 .small-btn {
   padding: 4px 8px;
-  border-radius: 999px;
+  border-radius: 4px;
   border: none;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 13px;
   margin: 1px 0;
   color: #fff;
 }
@@ -345,3 +345,50 @@ tr:nth-child(even) {
 }
 
 
+
+
+/* ---------- جدول داخل DIV مع Scroll عرضي (نفس أسلوب صفحة المطبوع) ---------- */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.table-scroll table {
+  width: max-content;
+  min-width: 100%;
+}
+
+.capture-area {
+  background: #ffffff;
+}
+
+/* شريط التصدير */
+.export-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 10px 0 12px;
+}
+
+.export-bar .export-btn {
+  background: #111827;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+
+/* زر عام */
+.btn {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}

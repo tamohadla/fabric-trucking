@@ -57,63 +57,7 @@
     padding: 10px 12px;
   }
 
-  /* --------- تحويل جداول السادة إلى كروت مثل التصميم --------- */
-
-  .card table {
-    width: 100%;
-    border: none;
-    border-collapse: collapse;
-  }
-
-  .card thead {
-    display: none; /* إخفاء رؤوس الأعمدة */
-  }
-
-  .card tbody tr {
-    display: block;
-    background: #ffffff;
-    margin-bottom: 16px;
-    border: 1px solid #d1d5db;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  /* كل سطر عبارة عن: (القيمة) على اليسار – (العنوان) على اليمين */
-  .card tbody td {
-    display: flex;
-    flex-direction: row-reverse; /* العنوان يمين، القيمة يسار */
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 6px;
-    border-bottom: 1px solid #e5e7eb;
-    font-size: 16px;          /* تكبير خط القيمة */
-    white-space: normal;
-  }
-
-  .card tbody td:last-child {
-    border-bottom: none;
-  }
-
-  /* العنوان (label) على اليمين، قادم من data-label */
-  .card tbody td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    font-size: 13px;
-    color: #4b5563;
-    margin-left: 12px;
-    white-space: nowrap;
-  }
-
-  /* شارة الحالة داخل السطر */
-  .status-pill {
-    font-size: 13px;
-    padding: 4px 10px;
-  }
-
-  .received-date {
-    font-size: 12px;
-    margin-top: 3px;
-  }
+  
 
   /* خلية الإجراءات في أسفل البطاقة – أزرار كبيرة ملوّنة */
   .actions-cell {
@@ -126,11 +70,11 @@
   }
 
   .actions-cell .small-btn {
-    flex: 1 1 30%;
+    flex: 1 1 40%;
     min-width: 0;
     padding: 12px 6px;
     font-size: 15px;
-    border-radius: 18px;
+    border-radius: 4px;
   }
 
   /* المودال على الموبايل */
@@ -163,3 +107,19 @@
 
 
 
+
+
+/* إبقاء الجدول جدولاً على الموبايل مع Scroll عرضي */
+@media (max-width: 900px) {
+  .table-scroll {
+    border-radius: 10px;
+  }
+
+  table {
+    font-size: 13px;
+  }
+
+  th, td {
+    padding: 8px 6px;
+  }
+}

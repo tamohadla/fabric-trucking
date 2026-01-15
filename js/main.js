@@ -787,6 +787,31 @@ async function exportCaptureAsPng(captureId, prefix) {
   }
 }
 
+// تصدير صورة مع إخفاء آخر 3 أعمدة في الجدول داخل منطقة الالتقاط
+async function exportCaptureAsPngHideLast3Cols(captureId, prefix) {
+  const captureEl = document.getElementById(captureId);
+  const tableEl = captureEl ? captureEl.querySelector("table") : null;
+
+  try {
+    if (!captureEl || !tableEl) {
+      throw new Error("Capture element or table not found");
+    }
+
+    // إخفاء آخر 3 أعمدة مؤقتاً
+    tableEl.classList.add("export-hide-last3");
+
+    const canvas = await captureTableCanvas(captureId);
+    const dataUrl = canvas.toDataURL("image/png");
+    downloadDataUrl(dataUrl, buildExportName(prefix) + ".png");
+  } catch (e) {
+    console.error(e);
+    alert("تعذر تصدير الصورة. تأكد من الاتصال بالإنترنت (لتحميل مكتبات التصدير) ثم حاول مرة أخرى.");
+  } finally {
+    // إعادة إظهار الأعمدة مهما حصل
+    if (tableEl) tableEl.classList.remove("export-hide-last3");
+  }
+}
+
 async function exportCaptureAsPdf(captureId, prefix) {
   try {
     const canvas = await captureTableCanvas(captureId);
@@ -834,11 +859,13 @@ function setupExportButtons() {
   const labPng = document.getElementById("exportLabPng");
   const labPdf = document.getElementById("exportLabPdf");
   const mainPng = document.getElementById("exportMainPng");
+  const mainPngHide3 = document.getElementById("exportMainPngHide3");
   const mainPdf = document.getElementById("exportMainPdf");
 
   if (labPng) labPng.addEventListener("click", () => exportCaptureAsPng("labTableCapture", "lab_table"));
   if (labPdf) labPdf.addEventListener("click", () => exportCaptureAsPdf("labTableCapture", "lab_table"));
   if (mainPng) mainPng.addEventListener("click", () => exportCaptureAsPng("mainTableCapture", "production_table"));
+  if (mainPngHide3) mainPngHide3.addEventListener("click", () => exportCaptureAsPngHideLast3Cols("mainTableCapture", "production_table"));
   if (mainPdf) mainPdf.addEventListener("click", () => exportCaptureAsPdf("mainTableCapture", "production_table"));
 }
 

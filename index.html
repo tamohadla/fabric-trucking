@@ -99,7 +99,12 @@
   <!-- جدول المخبريات -->
   <section class="card">
     <h3>جدول المخبريات (حالة الطلب = تم طلب المخبريات)</h3>
-    <table>
+    <div class="export-bar">
+      <button type="button" class="btn export-btn" id="exportLabPng">تصدير صورة</button>
+      <button type="button" class="btn export-btn" id="exportLabPdf">تصدير PDF</button>
+    </div>
+    <div id="labTableCapture" class="capture-area">
+      <div class="table-scroll"><table>
       <thead>
       <tr>
         <th>#</th>
@@ -115,13 +120,18 @@
       </tr>
       </thead>
       <tbody id="labTableBody"></tbody>
-    </table>
+    </table></div>
     <div class="totals" id="labTotals"></div>
+    </div>
   </section>
 
   <!-- جدول التشكيلات / الإنتاج -->
   <section class="card">
     <h3>جدول التشكيلات / الإنتاج</h3>
+    <div class="export-bar">
+      <button type="button" class="btn export-btn" id="exportMainPng">تصدير صورة</button>
+      <button type="button" class="btn export-btn" id="exportMainPdf">تصدير PDF</button>
+    </div>
 
     <!-- فلترة حسب حالة الطلب -->
     <div class="filter-bar">
@@ -156,7 +166,8 @@
       <button class="filter-btn" id="clearFiltersBtn">مسح الفلاتر</button>
     </div>
 
-    <table>
+    <div id="mainTableCapture" class="capture-area">
+      <div class="table-scroll"><table>
       <thead>
       <tr>
         <th>#</th>
@@ -173,8 +184,9 @@
       </tr>
       </thead>
       <tbody id="solidMainTableBody"></tbody>
-    </table>
+    </table></div>
     <div class="totals" id="solidTotals"></div>
+    </div>
   </section>
 </div>
 
@@ -258,6 +270,8 @@
 <!-- JS -->
 <script src="js/firebase.js"></script>
 <script src="js/modal.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNa5lZp0J7H5R8fTpxkJwdkJd3b8t3B2v2vW0Qw2N2B6tH9Y2KsFcfoTmyaKOA1NVuMcZV8C4D4ew3Efr2E1cA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qm8wT+0W7Y6xB4CqWmUeifVQutC8E0m8oC5qW0yZpW+QwZxV9XaiuJvGgH5VdV8y9y4nP9zqQq8m8h1aZs5k0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

@@ -721,5 +721,127 @@ db.collection("solid_orders")
 setupDigitNormalization();
 
 
+/************ تصدير الجداول (صورة / PDF) ************/
 
+async function captureTableCanvas(captureId) {
+  const el = document.getElementById(captureId);
+  if (!el) throw new Error("عنصر التصدير غير موجود: " + captureId);
+
+  // نسخ العنصر حتى نلتقط الجدول كامل العرض (بدون قص بسبب scroll)
+  const clone = el.cloneNode(true);
+  clone.style.position = "fixed";
+  clone.style.left = "-10000px";
+  clone.style.top = "0";
+  clone.style.background = "#ffffff";
+  clone.style.padding = "16px";
+  clone.style.borderRadius = "12px";
+
+  document.body.appendChild(clone);
+
+  // ضبط الـ scroll ليصبح مرئياً بالكامل داخل النسخة
+  const scrollDiv = clone.querySelector(".table-scroll");
+  if (scrollDiv) {
+    scrollDiv.style.overflow = "visible";
+    // مهم: بعد الإضافة للـ DOM يصبح scrollWidth متاحاً
+    const fullW = scrollDiv.scrollWidth || scrollDiv.offsetWidth;
+    scrollDiv.style.width = fullW + "px";
+  }
+
+  const canvas = await html2canvas(clone, {
+    backgroundColor: "#ffffff",
+    scale: 2,
+    useCORS: true
+  });
+
+  document.body.removeChild(clone);
+  return canvas;
+}
+
+function downloadDataUrl(dataUrl, filename) {
+  const link = document.createElement("a");
+  link.href = dataUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function buildExportName(prefix) {
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mi = String(d.getMinutes()).padStart(2, "0");
+  return `${prefix}_${yyyy}-${mm}-${dd}_${hh}${mi}`;
+}
+
+async function exportCaptureAsPng(captureId, prefix) {
+  try {
+    const canvas = await captureTableCanvas(captureId);
+    const dataUrl = canvas.toDataURL("image/png");
+    downloadDataUrl(dataUrl, buildExportName(prefix) + ".png");
+  } catch (e) {
+    console.error(e);
+    alert("تعذر تصدير الصورة. تأكد من الاتصال بالإنترنت (لتحميل مكتبات التصدير) ثم حاول مرة أخرى.");
+  }
+}
+
+async function exportCaptureAsPdf(captureId, prefix) {
+  try {
+    const canvas = await captureTableCanvas(captureId);
+    const imgData = canvas.toDataURL("image/png");
+
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+      throw new Error("jsPDF not loaded");
+    }
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
+
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const margin = 20;
+
+    const imgW = pageW - margin * 2;
+    const imgH = (canvas.height * imgW) / canvas.width;
+
+    let y = margin;
+
+    // إذا الصورة أطول من صفحة واحدة: نقسمها صفحات
+    let remainingH = imgH;
+    let offsetY = 0;
+
+    while (remainingH > 0) {
+      pdf.addImage(imgData, "PNG", margin, y - offsetY, imgW, imgH, undefined, "FAST");
+
+      remainingH -= (pageH - margin * 2);
+      offsetY += (pageH - margin * 2);
+
+      if (remainingH > 0) {
+        pdf.addPage();
+      }
+    }
+
+    pdf.save(buildExportName(prefix) + ".pdf");
+  } catch (e) {
+    console.error(e);
+    alert("تعذر تصدير PDF. تأكد من الاتصال بالإنترنت (لتحميل مكتبات التصدير) ثم حاول مرة أخرى.");
+  }
+}
+
+function setupExportButtons() {
+  const labPng = document.getElementById("exportLabPng");
+  const labPdf = document.getElementById("exportLabPdf");
+  const mainPng = document.getElementById("exportMainPng");
+  const mainPdf = document.getElementById("exportMainPdf");
+
+  if (labPng) labPng.addEventListener("click", () => exportCaptureAsPng("labTableCapture", "lab_table"));
+  if (labPdf) labPdf.addEventListener("click", () => exportCaptureAsPdf("labTableCapture", "lab_table"));
+  if (mainPng) mainPng.addEventListener("click", () => exportCaptureAsPng("mainTableCapture", "production_table"));
+  if (mainPdf) mainPdf.addEventListener("click", () => exportCaptureAsPdf("mainTableCapture", "production_table"));
+}
+
+// تفعيل أزرار التصدير
+setupExportButtons();
 
